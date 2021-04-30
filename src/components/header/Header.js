@@ -5,7 +5,12 @@ export default class Header extends React.Component {
   render() {
     return (
       <div>
-        <nav className="navbar" role="navigation" aria-label="main navigation">
+        <nav
+          className="navbar"
+          role="navigation"
+          aria-label="main navigation"
+          style={{ backgroundColor: "#f2f5f3" }}
+        >
           <div className="navbar-brand">
             <Link className="navbar-item" to="/">
               <img
@@ -30,10 +35,10 @@ export default class Header extends React.Component {
             <div className="navbar-end">
               <div className="navbar-item">
                 <div className="buttons">
-                  <Link className="button is-primary" to="/register">
+                  <Link className="button is-danger" to="/register">
                     <strong>Cadastre-se</strong>
                   </Link>
-                  <Link className="button is-light" to="/login">
+                  <Link className="button is-danger is-light" to="/login">
                     Realizar login
                   </Link>
                 </div>
