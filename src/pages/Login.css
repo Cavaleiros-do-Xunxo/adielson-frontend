@@ -1,0 +1,30 @@
+.login {
+  height: 100%;
+}
+
+.login-container {
+  z-index: 1;
+}
+
+img.deliveryman-icon {
+  width: auto;
+  height: 200px;
+}
+
+.deliveryman {
+  position: absolute;
+  top: 50%;
+  left: 80px;
+  transform: translateY(-50%);
+}
+
+.login-card {
+  height: fit-content;
+  max-height: fit-content;
+  margin-top: 40%;
+}
+
+.waves {
+  position: absolute;
+  bottom: 0px;
+}
