@@ -1,10 +1,12 @@
 import React from "react";
 import Card from "../components/card-menu/Card";
 
+import "./Menu.css";
+
 export default class Menu extends React.Component {
   render() {
     return (
-      <div className="container">
+      <div className="menu-container container">
         <div className="colums">
           <div className="column">
             <h1 className="title">Cardápio do dia</h1>

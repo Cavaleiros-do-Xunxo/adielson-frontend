@@ -1,9 +1,11 @@
 import React from "react";
 
+import "./Card.css";
+
 export default class Card extends React.Component {
   render() {
     return (
-      <div className="card">
+      <div className="card" style={{ margin: "10px" }}>
         <div className="card-image">
           <figure className="image is-4by3">
             <img
@@ -15,25 +17,16 @@ export default class Card extends React.Component {
         <div className="card-content">
           <div className="media">
             <div className="media-content">
-              <div className="columns">
-                <div className="column is-four-fifths">
-                  <p className="title is-4">Marmita</p>
-                  <p className="subtitle is-6">
-                    Arroz, feijão, frango empanado.
-                  </p>
-                </div>
-                <div className="column">
-                  <button className="button is-danger is-rounded">
-                    <i className="fas fa-plus"></i>
-                  </button>
-                </div>
-              </div>
+              <p className="title is-4">Marmita</p>
+              <p className="subtitle is-6">Arroz, feijão, frango empanado.</p>
             </div>
           </div>
 
-          <div className="content">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            nec iaculis mauris.
+          <div className="content" style={{ textAlign: "center" }}>
+            <button className="button is-danger is-rounded">
+              <i className="fas fa-plus add-item-to-char-icon"></i> Adicionar ao
+              carrinho
+            </button>
           </div>
         </div>
       </div>
