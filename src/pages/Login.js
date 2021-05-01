@@ -9,7 +9,7 @@ export default class Login extends React.Component {
       <div className="login">
         <div className="login-container container is-fluid">
           <div className="columns">
-            <div className="column is-three-quarters">
+            <div className="column is-three-fifths">
               <div className="only-css-my-friend">
                 <div className="deliveryman is-desktop">
                   <img
@@ -20,7 +20,14 @@ export default class Login extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="column">
+            <div
+              className="column"
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+              }}
+            >
               <div className="login-card">
                 <Card />
               </div>
