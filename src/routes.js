@@ -1,10 +1,10 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Menu from "./pages/Menu";
-import Register from "./pages/Register";
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import Menu from "./pages/menu/Menu";
+import Register from "./pages/register/Register";
 
 export default function Routes() {
   return (

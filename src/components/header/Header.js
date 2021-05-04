@@ -9,7 +9,7 @@ export default class Header extends React.Component {
           className="navbar"
           role="navigation"
           aria-label="main navigation"
-          style={{ backgroundColor: "#f2f5f3" }}
+          style={{ backgroundColor: "#F5F0EB" }}
         >
           <div className="navbar-brand">
             <Link className="navbar-item" to="/">
@@ -19,10 +19,24 @@ export default class Header extends React.Component {
                 height="64"
                 alt="Adielson's restaurant and pastry"
               />
+              <h6 className="title is-6"> Adielson</h6>
             </Link>
+
+            <a
+              role="button"
+              className="navbar-burger"
+              aria-label="menu"
+              aria-expanded="true"
+              data-target="navbar-items"
+              href="#!"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
           </div>
 
-          <div id="navbarBasicExample" className="navbar-menu">
+          <div id="navbar-items" className="navbar-menu">
             <div className="navbar-start">
               <Link className="navbar-item" to="/">
                 Início

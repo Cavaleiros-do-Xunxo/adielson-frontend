@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "../components/card-login/Card";
+import Card from "../../components/card-login/Card";
 
 import "./Login.css";
 
@@ -9,25 +9,16 @@ export default class Login extends React.Component {
       <div className="login">
         <div className="login-container container is-fluid">
           <div className="columns">
-            <div className="column is-three-fifths">
-              <div className="only-css-my-friend">
-                <div className="deliveryman is-desktop">
-                  <img
-                    src={process.env.PUBLIC_URL + "/assets/entregador.png"}
-                    alt="Entregador na motoca"
-                    className="deliveryman-icon"
-                  />
-                </div>
+            <div className="column" style={{ display: "flex", width: 0 }}>
+              <div className="deliveryman">
+                <img
+                  src={process.env.PUBLIC_URL + "/assets/entregador.png"}
+                  alt="Entregador na motoca"
+                  className="deliveryman-icon"
+                />
               </div>
             </div>
-            <div
-              className="column"
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                display: "flex",
-              }}
-            >
+            <div className="column is-half">
               <div className="login-card">
                 <Card />
               </div>
@@ -49,7 +40,7 @@ export default class Login extends React.Component {
               />
             </defs>
             <g className="parallax">
-              <use href="#gentle-wave" x="48" y="0" fill="#f14668" />
+              <use href="#gentle-wave" x="48" y="0" fill="#EA1D2C" />
             </g>
           </svg>
         </div>

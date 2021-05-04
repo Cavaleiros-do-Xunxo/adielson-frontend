@@ -2,7 +2,15 @@
 
 html,
 body {
-  background-color: #f8edeb;
+  background-color: #ffffff;
   height: 100%;
   margin: 0;
+}
+
+.button.is-danger {
+  background-color: #ea1d2c !important;
+}
+
+.button.is-danger.is-light {
+  background-color: #f7acb7 !important;
 }
