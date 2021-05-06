@@ -5,6 +5,18 @@ import "./Menu.css";
 
 export default class Menu extends React.Component {
   render() {
+    const mockCards = [];
+
+    for (let i = 0; i < 6; i++) {
+      mockCards.push(
+        <div key={i} className="column is-one-quarter">
+          <div className="card-item">
+            <Card />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="menu-container container">
         <div className="colums">
@@ -12,28 +24,7 @@ export default class Menu extends React.Component {
             <h1 className="title">Cardápio do dia</h1>
           </div>
         </div>
-        <div className="columns">
-          <div className="column is-one-third">
-            <Card />
-          </div>
-          <div className="column is-one-third">
-            <Card />
-          </div>
-          <div className="column is-one-third">
-            <Card />
-          </div>
-        </div>
-        <div className="columns">
-          <div className="column is-one-third">
-            <Card />
-          </div>
-          <div className="column is-one-third">
-            <Card />
-          </div>
-          <div className="column is-one-third">
-            <Card />
-          </div>
-        </div>
+        <div className="columns is-flex-wrap-wrap">{mockCards}</div>
       </div>
     );
   }

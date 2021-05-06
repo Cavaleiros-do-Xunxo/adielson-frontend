@@ -10,11 +10,11 @@ export default class Login extends React.Component {
         <div className="login-container container is-fluid">
           <div className="columns">
             <div className="column" style={{ display: "flex", width: 0 }}>
-              <div className="deliveryman">
+              <div className="food">
                 <img
-                  src={process.env.PUBLIC_URL + "/assets/entregador.png"}
-                  alt="Entregador na motoca"
-                  className="deliveryman-icon"
+                  src={process.env.PUBLIC_URL + "/assets/delivery-food.svg"}
+                  alt="Comida de fast food"
+                  className="food-icon"
                 />
               </div>
             </div>

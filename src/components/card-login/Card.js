@@ -11,7 +11,7 @@ export default class Card extends React.Component {
           <div className="media">
             <div className="media-content" style={{ textAlign: "center" }}>
               <img
-                src={process.env.PUBLIC_URL + "/assets/adielson-icon.png"}
+                src={process.env.PUBLIC_URL + "/assets/adielson.png"}
                 alt="Adielson icon"
                 className="login-icon"
               />

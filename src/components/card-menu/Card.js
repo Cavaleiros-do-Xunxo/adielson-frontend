@@ -5,7 +5,7 @@ import "./Card.css";
 export default class Card extends React.Component {
   render() {
     return (
-      <div className="card" style={{ margin: "10px" }}>
+      <div className="card">
         <div className="card-image">
           <figure className="image is-4by3">
             <img
@@ -24,8 +24,7 @@ export default class Card extends React.Component {
 
           <div className="content" style={{ textAlign: "center" }}>
             <button className="button is-danger is-rounded">
-              <i className="fas fa-plus add-item-to-char-icon"></i> Adicionar ao
-              carrinho
+              <i className="fas fa-plus add-item-to-char-icon"></i> Adicionar
             </button>
           </div>
         </div>

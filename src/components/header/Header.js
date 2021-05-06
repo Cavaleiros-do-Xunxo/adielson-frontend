@@ -14,7 +14,7 @@ export default class Header extends React.Component {
           <div className="navbar-brand">
             <Link className="navbar-item" to="/">
               <img
-                src={process.env.PUBLIC_URL + "/assets/adielson-icon.png"}
+                src={process.env.PUBLIC_URL + "/assets/adielson.png"}
                 width="32"
                 height="64"
                 alt="Adielson's restaurant and pastry"
