@@ -16,3 +16,9 @@ div.menu-container {
     margin-left: 5%;
   }
 }
+
+@media (max-width: 768px) {
+  .menu-title {
+    text-align: center;
+  }
+}
