@@ -36,6 +36,7 @@ export default class Menu extends React.Component {
             >
               Cardápio do dia
             </Heading>
+            <hr />
           </Columns.Column>
         </Columns>
         <Columns flexWrap={"wrap"}>{mockCards}</Columns>

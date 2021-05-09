@@ -7,6 +7,7 @@ import Login from "./pages/login/Login";
 import Menu from "./pages/menu/Menu";
 import Register from "./pages/register/Register";
 import Order from "./pages/order/Order";
+import NotFound from "./pages/notfound/NotFound";
 
 export default function Routes() {
   return (
@@ -17,6 +18,7 @@ export default function Routes() {
         <Route path="/login" exact={true} component={Login} />
         <Route path="/register" exact={true} component={Register} />
         <Route path="/order" exact={true} component={Order} />
+        <Route path="*" component={NotFound}></Route>
       </Switch>
     </AnimatePresence>
   );
