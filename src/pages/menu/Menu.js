@@ -1,6 +1,6 @@
 import React from "react";
 import CardMenu from "../../components/card-menu/CardMenu";
-
+import { motion } from "framer-motion";
 import { Block, Container, Columns, Heading } from "react-bulma-components";
 
 import "./Menu.css";
@@ -20,7 +20,13 @@ export default class Menu extends React.Component {
     }
 
     return (
-      <Container className="menu-container">
+      <Container
+        renderAs={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="menu-container"
+      >
         <Columns>
           <Columns.Column>
             <Heading

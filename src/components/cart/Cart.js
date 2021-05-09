@@ -1,5 +1,5 @@
 import React from "react";
-
+import { motion } from "framer-motion";
 import {
   Modal,
   Media,
@@ -18,7 +18,12 @@ export default class Cart extends React.Component {
         }}
         show={this.props.show}
       >
-        <Modal.Card>
+        <Modal.Card
+          renderAs={motion.div}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
           <Modal.Card.Header>
             <Modal.Card.Title>Carrinho</Modal.Card.Title>
           </Modal.Card.Header>
@@ -46,7 +51,10 @@ export default class Cart extends React.Component {
                   justifyContent="center"
                   alignItems="center"
                 >
-                  <Button color="ghost" style={{ color: "black" }}>
+                  <Button
+                    color="ghost"
+                    style={{ color: "black", marginRight: "-10px" }}
+                  >
                     <i className="fas fa-minus"></i>
                   </Button>
                   <Form.Input
@@ -54,11 +62,14 @@ export default class Cart extends React.Component {
                     type="text"
                     size="small"
                     rounded={true}
-                    style={{ width: "50px" }}
+                    style={{ width: "40px" }}
                     value={0}
                     textAlign="center"
                   />
-                  <Button color="ghost" style={{ color: "black" }}>
+                  <Button
+                    color="ghost"
+                    style={{ color: "black", marginLeft: "-10px" }}
+                  >
                     <i className="fas fa-plus"></i>
                   </Button>
                 </Form.Control>

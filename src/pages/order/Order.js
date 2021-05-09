@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Block } from "react-bulma-components";
 
-export default class Home extends React.Component {
+export default class Order extends React.Component {
   render() {
     return (
       <Block
@@ -11,7 +11,7 @@ export default class Home extends React.Component {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        Home Page
+        This is Order component!
       </Block>
     );
   }

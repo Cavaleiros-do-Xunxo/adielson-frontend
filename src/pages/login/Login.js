@@ -1,6 +1,6 @@
 import React from "react";
 import CardLogin from "../../components/card-login/CardLogin";
-
+import { motion } from "framer-motion";
 import { Block, Container, Columns } from "react-bulma-components";
 
 import "./Login.css";
@@ -8,7 +8,13 @@ import "./Login.css";
 export default class Login extends React.Component {
   render() {
     return (
-      <Block className="login">
+      <Block
+        renderAs={motion.div}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="login"
+      >
         <Container className="login-container" breakpoint={"fluid"}>
           <Columns>
             <Columns.Column style={{ display: "flex", width: 0 }}>
