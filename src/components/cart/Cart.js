@@ -1,14 +1,26 @@
 import React from "react";
 
-import { Modal, Media, Image, Content, Button } from "react-bulma-components";
+import {
+  Modal,
+  Media,
+  Image,
+  Content,
+  Button,
+  Form,
+} from "react-bulma-components";
 
 export default class Cart extends React.Component {
   render = () => {
     return (
-      <Modal onClose={() => {}} show={true}>
+      <Modal
+        onClose={() => {
+          this.props.showCb(false);
+        }}
+        show={this.props.show}
+      >
         <Modal.Card>
           <Modal.Card.Header>
-            <Modal.Card.Title>Title</Modal.Card.Title>
+            <Modal.Card.Title>Carrinho</Modal.Card.Title>
           </Modal.Card.Header>
           <Modal.Card.Body>
             <Media>
@@ -22,21 +34,39 @@ export default class Cart extends React.Component {
               <Media.Item>
                 <Content>
                   <p>
-                    <strong>John Smith</strong> <small>@johnsmith</small>{" "}
-                    <small>31m</small>
+                    <strong>Marmita</strong>
                     <br />
-                    If the children of the Modal is a card, the close button
-                    will be on the Card Head instead than the top-right corner
-                    You can also pass showClose = false to Card.Head to hide the
-                    close button
+                    Arroz, feijão, frango empanado.
                   </p>
                 </Content>
               </Media.Item>
+              <Media.Item align="right">
+                <Form.Control
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Button color="ghost" style={{ color: "black" }}>
+                    <i className="fas fa-minus"></i>
+                  </Button>
+                  <Form.Input
+                    readOnly={true}
+                    type="text"
+                    size="small"
+                    rounded={true}
+                    style={{ width: "50px" }}
+                    value={0}
+                    textAlign="center"
+                  />
+                  <Button color="ghost" style={{ color: "black" }}>
+                    <i className="fas fa-plus"></i>
+                  </Button>
+                </Form.Control>
+              </Media.Item>
             </Media>
           </Modal.Card.Body>
-          <Modal.Card.Footer align="right">
-            <Button color="success">Like</Button>
-            <Button>Share</Button>
+          <Modal.Card.Footer justifyContent="center">
+            <Button color="success">Finalizar pedido</Button>
           </Modal.Card.Footer>
         </Modal.Card>
       </Modal>

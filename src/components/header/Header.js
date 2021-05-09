@@ -8,11 +8,15 @@ export default class Header extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { isActive: false, openCart: false };
+    this.state = { isActive: false, showCart: false };
   }
 
   setIsActive = (value) => {
     this.setState({ isActive: value });
+  };
+
+  showCart = (value) => {
+    this.setState({ showCart: value });
   };
 
   render = () => {
@@ -48,11 +52,13 @@ export default class Header extends React.Component {
                 <Button
                   className="is-ghost"
                   style={{ color: "black" }}
-                  onClick={() => this.showCart()}
+                  onClick={() => {
+                    this.setState({ showCart: true });
+                  }}
                 >
                   <i className="fa fa-shopping-cart"></i>
                 </Button>
-                <Cart />
+                <Cart show={this.state.showCart} showCb={this.showCart} />
                 <Link className="button is-danger" to="/register">
                   <strong>Cadastre-se</strong>
                 </Link>
