@@ -1,7 +1,9 @@
 import React from "react";
 
+import { Block } from "react-bulma-components";
+
 export default class Home extends React.Component {
   render() {
-    return <div className="home">Home Page</div>;
+    return <Block>Home Page</Block>;
   }
 }

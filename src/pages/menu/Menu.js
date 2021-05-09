@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "../../components/card-menu/Card";
+import CardMenu from "../../components/card-menu/CardMenu";
 
 import "./Menu.css";
 
@@ -11,7 +11,7 @@ export default class Menu extends React.Component {
       mockCards.push(
         <div key={i} className="column is-one-quarter">
           <div className="card-item">
-            <Card />
+            <CardMenu />
           </div>
         </div>
       );

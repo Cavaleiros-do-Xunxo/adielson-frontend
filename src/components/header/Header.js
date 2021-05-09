@@ -1,12 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Navbar } from "react-bulma-components";
+import { Navbar, Button } from "react-bulma-components";
+
+import Cart from "../cart/Cart";
 
 export default class Header extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { isActive: false };
+    this.state = { isActive: false, openCart: false };
   }
 
   setIsActive = (value) => {
@@ -43,6 +45,14 @@ export default class Header extends React.Component {
           <Navbar.Container align="end">
             <Navbar.Item href="#" renderAs="div">
               <div className="buttons">
+                <Button
+                  className="is-ghost"
+                  style={{ color: "black" }}
+                  onClick={() => this.showCart()}
+                >
+                  <i className="fa fa-shopping-cart"></i>
+                </Button>
+                <Cart />
                 <Link className="button is-danger" to="/register">
                   <strong>Cadastre-se</strong>
                 </Link>

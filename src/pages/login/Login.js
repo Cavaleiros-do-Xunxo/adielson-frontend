@@ -1,31 +1,33 @@
 import React from "react";
-import Card from "../../components/card-login/Card";
+import CardLogin from "../../components/card-login/CardLogin";
+
+import { Block, Container, Columns } from "react-bulma-components";
 
 import "./Login.css";
 
 export default class Login extends React.Component {
   render() {
     return (
-      <div className="login">
-        <div className="login-container container is-fluid">
-          <div className="columns">
-            <div className="column" style={{ display: "flex", width: 0 }}>
-              <div className="food">
+      <Block className="login">
+        <Container className="login-container" breakpoint={"fluid"}>
+          <Columns>
+            <Columns.Column style={{ display: "flex", width: 0 }}>
+              <Block className="food">
                 <img
                   src={process.env.PUBLIC_URL + "/assets/delivery-food.svg"}
                   alt="Comida de fast food"
                   className="food-icon"
                 />
-              </div>
-            </div>
-            <div className="column is-half">
-              <div className="login-card">
-                <Card />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
+              </Block>
+            </Columns.Column>
+            <Columns.Column size={"half"}>
+              <Block className="login-card">
+                <CardLogin />
+              </Block>
+            </Columns.Column>
+          </Columns>
+        </Container>
+        <Block>
           <svg
             className="waves"
             xmlns="http://www.w3.org/2000/svg"
@@ -43,8 +45,8 @@ export default class Login extends React.Component {
               <use href="#gentle-wave" x="48" y="0" fill="#EA1D2C" />
             </g>
           </svg>
-        </div>
-      </div>
+        </Block>
+      </Block>
     );
   }
 }
