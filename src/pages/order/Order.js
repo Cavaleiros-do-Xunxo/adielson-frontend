@@ -2,6 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Container, Heading } from "react-bulma-components";
 
+import ListItem from "../../components/list-item/ListItem";
+
 export default class Order extends React.Component {
   render() {
     return (
@@ -15,6 +17,7 @@ export default class Order extends React.Component {
           Confirme seu pedido
         </Heading>
         <hr />
+        <ListItem useBoxWrap={true} />
       </Container>
     );
   }

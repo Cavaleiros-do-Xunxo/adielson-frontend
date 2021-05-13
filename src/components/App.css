@@ -14,3 +14,9 @@ body {
 .button.is-danger.is-light {
   background-color: #f7acb7 !important;
 }
+
+@media (max-width: 420px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+}
