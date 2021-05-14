@@ -1,0 +1,28 @@
+.card-item {
+  display: flex;
+  justify-content: center;
+}
+.menu-title{
+  text-align: center;
+  
+}
+.view-menu{
+  text-align: center;
+  margin-top: 20px;
+}
+
+@media (max-width: 360px) {
+  .columns {
+    max-width: 360px;
+  }
+
+  .card-item {
+    margin-left: 5%; 
+    
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+ 
+}
