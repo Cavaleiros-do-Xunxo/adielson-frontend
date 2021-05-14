@@ -72,7 +72,7 @@ export default class Home extends React.Component {
             </Columns.Column>
         </Columns>
       </Container>  
-          <Box className="teste"> 
+          <Box className="view-menu"> 
             <Link to="/menu">
               <Button size="medium" color="danger">
                 Visualizar Cardápio 
