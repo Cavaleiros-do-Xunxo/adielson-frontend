@@ -1,7 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Modal, Button } from "react-bulma-components";
+import { Modal } from "react-bulma-components";
 import ListItem from "../list-item/ListItem";
+import { Link } from "react-router-dom";
 
 export default class Cart extends React.Component {
   render = () => {
@@ -25,7 +26,15 @@ export default class Cart extends React.Component {
             <ListItem useBoxWrap={false} />
           </Modal.Card.Body>
           <Modal.Card.Footer justifyContent="center">
-            <Button color="success">Finalizar pedido</Button>
+            <Link
+              className="button is-success"
+              to="/order"
+              onClick={() => {
+                this.props.showCb(false);
+              }}
+            >
+              Finalizar pedido
+            </Link>
           </Modal.Card.Footer>
         </Modal.Card>
       </Modal>
