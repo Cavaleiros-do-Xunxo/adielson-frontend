@@ -1,18 +1,20 @@
 import React from "react";
-import Cards from "react-credit-cards";
 import { motion } from "framer-motion";
 import {
   Block,
   Button,
   Container,
-  Columns,
   Heading,
   Form,
-  Icon,
 } from "react-bulma-components";
-
-import "react-credit-cards/es/styles-compiled.css";
+import {
+  formatCreditCardNumber,
+  formatCVC,
+  formatExpirationDate,
+} from "../../utils";
 import ListItem from "../../components/list-item/ListItem";
+import AddressForm from "../../components/address-form/AddressForm";
+import PaymentForm from "../../components/payment-form/PaymentForm";
 
 const config = {
   steps: {
@@ -39,19 +41,23 @@ const paymentMethods = {
 
 export default class Order extends React.Component {
   state = {
-    currentStep: config.steps.CONFIRM_ITEMS,
     initialOpacity: 0,
     endOpacity: 1,
+    currentStep: config.steps.CONFIRM_ITEMS,
     deliveryMethod: deliveryMethods.DELIVERY,
-    address: "",
-    addressNumber: null,
-    complement: "",
-    method: paymentMethods.IN_APP,
-    cvc: "",
-    expiry: "",
+    paymentMethod: paymentMethods.IN_APP,
+    location: {
+      address: "",
+      number: "",
+      complement: "",
+    },
     focused: "",
-    name: "",
-    number: "",
+    payment: {
+      cvc: "",
+      expiry: "",
+      name: "",
+      number: "",
+    },
   };
 
   updateCurrentStep = (step) => {
@@ -66,62 +72,54 @@ export default class Order extends React.Component {
     this.setState({ focused: e.target.name });
   };
 
-  handleInputChange = (e) => {
+  handlePaymentInputChange = ({ target }) => {
+    if (target.name === "number") {
+      target.value = formatCreditCardNumber(target.value);
+    } else if (target.name === "expiry") {
+      target.value = formatExpirationDate(target.value);
+    } else if (target.name === "cvc") {
+      target.value = formatCVC(target.value);
+    }
+
+    this.setState({
+      payment: { ...this.state.payment, [target.name]: target.value },
+    });
+  };
+
+  handleAddressInputChange = (e) => {
     const { name, value } = e.target;
 
-    this.setState({ [name]: value });
+    this.setState({ location: { ...this.state.location, [name]: value } });
   };
 
   getDeliveryForm = () => {
-    if (!this.state.deliveryMethod === deliveryMethods.DELIVERY) {
-      return;
+    if (this.state.deliveryMethod === deliveryMethods.DELIVERY) {
+      return (
+        <Block>
+          <AddressForm handleInputChange={this.handleAddressInputChange} />
+          <hr />
+        </Block>
+      );
     }
+  };
 
-    return (
-      <Block>
-        <Columns>
-          <Columns.Column>
-            <Form.Field>
-              <Form.Label>Endereço de entrega</Form.Label>
-              <Form.Control>
-                <Form.Input
-                  placeholder="Insira o endereço de entrega"
-                  onChange={(e) => this.setState({ address: e.target.value })}
-                />
-                <Icon align="left" size="small">
-                  <i className="fas fa-map-marker-alt"></i>
-                </Icon>
-              </Form.Control>
-            </Form.Field>
-          </Columns.Column>
-          <Columns.Column size="one-quarter">
-            <Form.Field>
-              <Form.Label>Número</Form.Label>
-              <Form.Control>
-                <Form.Input
-                  placeholder="Insira o número da casa ou apto"
-                  onChange={(e) =>
-                    this.setState({ addressNumber: e.target.value })
-                  }
-                />
-              </Form.Control>
-            </Form.Field>
-          </Columns.Column>
-        </Columns>
-        <Form.Field>
-          <Form.Label>Complemento</Form.Label>
-          <Form.Control>
-            <Form.Input
-              placeholder="Ex.: casa, apto, próximo à ..."
-              onChange={(e) => this.setState({ complement: e.target.value })}
-            />
-            <Icon align="left" size="small">
-              <i className="fas fa-info"></i>
-            </Icon>
-          </Form.Control>
-        </Form.Field>
-      </Block>
-    );
+  getPaymentForm = () => {
+    if (this.state.paymentMethod === paymentMethods.IN_APP) {
+      return (
+        <Block>
+          <PaymentForm
+            cvc={this.state.payment.cvc}
+            expiry={this.state.payment.expiry}
+            name={this.state.payment.name}
+            number={this.state.payment.number}
+            focused={this.state.focused}
+            handlePaymentInputChange={this.handlePaymentInputChange}
+            handleInputFocus={this.handleInputFocus}
+          />
+          <hr />
+        </Block>
+      );
+    }
   };
 
   render() {
@@ -157,7 +155,7 @@ export default class Order extends React.Component {
             <Form.Control>
               <Form.Radio
                 value={deliveryMethods.DELIVERY}
-                name="delivery-method"
+                name="deliveryMethod"
                 checked={this.state.deliveryMethod === deliveryMethods.DELIVERY}
                 onChange={(e) => {
                   return this.setState({
@@ -169,7 +167,7 @@ export default class Order extends React.Component {
               </Form.Radio>
               <Form.Radio
                 value={deliveryMethods.WITHDRAW_IN_PLACE}
-                name="delivery-method"
+                name="deliveryMethod"
                 checked={
                   this.state.deliveryMethod ===
                   deliveryMethods.WITHDRAW_IN_PLACE
@@ -191,11 +189,11 @@ export default class Order extends React.Component {
             <Form.Control>
               <Form.Radio
                 value={paymentMethods.IN_APP}
-                name="payment-method"
-                checked={this.state.method === paymentMethods.IN_APP}
+                name="paymentMethod"
+                checked={this.state.paymentMethod === paymentMethods.IN_APP}
                 onChange={(e) => {
                   this.setState({
-                    method: e.target.value,
+                    paymentMethod: e.target.value,
                   });
                 }}
               >
@@ -203,11 +201,13 @@ export default class Order extends React.Component {
               </Form.Radio>
               <Form.Radio
                 value={paymentMethods.ON_DELIVERY}
-                name="payment-method"
-                checked={this.state.method === paymentMethods.ON_DELIVERY}
+                name="paymentMethod"
+                checked={
+                  this.state.paymentMethod === paymentMethods.ON_DELIVERY
+                }
                 onChange={(e) => {
                   return this.setState({
-                    method: e.target.value,
+                    paymentMethod: e.target.value,
                   });
                 }}
               >
@@ -216,77 +216,7 @@ export default class Order extends React.Component {
             </Form.Control>
           </Form.Field>
           <hr />
-          <Columns>
-            <Columns.Column>
-              <Form.Field>
-                <Form.Label>Dados do cartão</Form.Label>
-                <Form.Field>
-                  <Form.Control>
-                    <Form.Input
-                      type="tel"
-                      name="number"
-                      placeholder="Número do cartão"
-                      onChange={this.handleInputChange}
-                      onFocus={this.handleInputFocus}
-                    />
-                  </Form.Control>
-                </Form.Field>
-                <Form.Field>
-                  <Form.Control>
-                    <Form.Input
-                      placeholder="Nome"
-                      type="text"
-                      name="name"
-                      onChange={this.handleInputChange}
-                      onFocus={this.handleInputFocus}
-                    />
-                  </Form.Control>
-                </Form.Field>
-              </Form.Field>
-              <Columns>
-                <Columns.Column>
-                  <Form.Field>
-                    <Form.Control>
-                      <Form.Input
-                        placeholder="Data de expiração"
-                        type="tel"
-                        name="expiry"
-                        pattern="\d\d/\d\d"
-                        required
-                        onChange={this.handleInputChange}
-                        onFocus={this.handleInputFocus}
-                      />
-                    </Form.Control>
-                  </Form.Field>
-                </Columns.Column>
-                <Columns.Column>
-                  <Form.Field>
-                    <Form.Control>
-                      <Form.Input
-                        placeholder="CVC"
-                        type="tel"
-                        name="cvc"
-                        pattern="\d{3,4}"
-                        required
-                        onChange={this.handleInputChange}
-                        onFocus={this.handleInputFocus}
-                      />
-                    </Form.Control>
-                  </Form.Field>
-                </Columns.Column>
-              </Columns>
-            </Columns.Column>
-            <Columns.Column>
-              <Cards
-                cvc={this.state.cvc}
-                expiry={this.state.expiry}
-                focused={this.state.focused}
-                name={this.state.name}
-                number={this.state.number}
-              />
-            </Columns.Column>
-          </Columns>
-          <hr />
+          {this.getPaymentForm()}
           <Block display="flex" justifyContent="center">
             <Button
               color="danger"
@@ -301,7 +231,7 @@ export default class Order extends React.Component {
               color="success"
               style={{ marginLeft: "5px" }}
               onClick={() => {
-                console.log("successo");
+                console.log("Form", this.state);
               }}
             >
               <i className="fas fa-check"></i>
