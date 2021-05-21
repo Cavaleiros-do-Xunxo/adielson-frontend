@@ -6,15 +6,20 @@ import {
   Container,
   Heading,
   Form,
+  Notification,
+  Content,
 } from "react-bulma-components";
+
 import {
   formatCreditCardNumber,
   formatCVC,
   formatExpirationDate,
 } from "../../utils";
+
 import ListItem from "../../components/list-item/ListItem";
 import AddressForm from "../../components/address-form/AddressForm";
 import PaymentForm from "../../components/payment-form/PaymentForm";
+import SuccessOverlay from "../../components/success-overlay/SuccessOverlay";
 
 const config = {
   steps: {
@@ -24,7 +29,7 @@ const config = {
     },
     PAYMENT_AND_DELIVERY: {
       id: "PAYMENT_AND_DELIVERY",
-      title: "Método pagamento e forma de envio",
+      title: "Método de pagamento e forma de envio",
     },
   },
 };
@@ -38,6 +43,36 @@ const paymentMethods = {
   IN_APP: "IN_APP",
   ON_DELIVERY: "ON_DELIVERY",
 };
+
+const requiredLocationProps = [
+  {
+    propName: "address",
+    fieldName: "Endereço",
+  },
+  {
+    propName: "number",
+    fieldName: "Número do endereço",
+  },
+];
+
+const requiredPaymentProps = [
+  {
+    propName: "cvc",
+    fieldName: "CVC",
+  },
+  {
+    propName: "number",
+    fieldName: "Número do cartão",
+  },
+  {
+    propName: "expiry",
+    fieldName: "Data de expiração do cartão",
+  },
+  {
+    propName: "name",
+    fieldName: "Nome no cartão",
+  },
+];
 
 export default class Order extends React.Component {
   state = {
@@ -58,6 +93,8 @@ export default class Order extends React.Component {
       name: "",
       number: "",
     },
+    formIssues: [],
+    showSuccessOverlay: false,
   };
 
   updateCurrentStep = (step) => {
@@ -103,6 +140,74 @@ export default class Order extends React.Component {
     }
   };
 
+  validateForm = () => {
+    const _formIssues = [];
+
+    if (this.state.deliveryMethod === deliveryMethods.DELIVERY) {
+      for (const field of requiredLocationProps) {
+        if (!this.state.location[field.propName]) {
+          _formIssues.push(field);
+        }
+      }
+    }
+
+    if (this.state.paymentMethod === paymentMethods.IN_APP) {
+      for (const field of requiredPaymentProps) {
+        if (!this.state.payment[field.propName]) {
+          _formIssues.push(field);
+        }
+      }
+    }
+
+    return _formIssues;
+  };
+
+  submitForm = () => {
+    const issues = this.validateForm();
+
+    if (issues.length > 0) {
+      this.setState({ formIssues: issues });
+      return;
+    }
+
+    // @TODO: Submit order...
+    this.setState({ showSuccessOverlay: true });
+
+    setTimeout(() => {
+      this.props.history.push("/myorders");
+    }, 2000);
+  };
+
+  buildFormIssuesList = () => {
+    const fieldsToRender = [];
+    let i = 0;
+
+    for (const field of this.state.formIssues) {
+      fieldsToRender.push(<li key={i}>{field.fieldName}</li>);
+      i++;
+    }
+
+    return fieldsToRender;
+  };
+
+  getRequiredFieldsAlert = () => {
+    if (this.state.formIssues.length <= 0) {
+      return;
+    }
+
+    let message =
+      "Atenção os seguintes campos são requeridos e ainda não foram preenchidos: ";
+
+    return (
+      <Notification color="danger">
+        <p>{message}</p>
+        <Content>
+          <ul>{this.buildFormIssuesList()}</ul>
+        </Content>
+      </Notification>
+    );
+  };
+
   getPaymentForm = () => {
     if (this.state.paymentMethod === paymentMethods.IN_APP) {
       return (
@@ -119,6 +224,12 @@ export default class Order extends React.Component {
           <hr />
         </Block>
       );
+    }
+  };
+
+  getSuccessOverlay = () => {
+    if (this.state.showSuccessOverlay) {
+      return <SuccessOverlay />;
     }
   };
 
@@ -218,6 +329,13 @@ export default class Order extends React.Component {
           <hr />
           {this.getPaymentForm()}
           <Block display="flex" justifyContent="center">
+            {this.getRequiredFieldsAlert()}
+          </Block>
+          <Block
+            display="flex"
+            justifyContent="center"
+            style={{ marginBottom: "10px" }}
+          >
             <Button
               color="danger"
               onClick={() => {
@@ -231,7 +349,7 @@ export default class Order extends React.Component {
               color="success"
               style={{ marginLeft: "5px" }}
               onClick={() => {
-                console.log("Form", this.state);
+                this.submitForm();
               }}
             >
               <i className="fas fa-check"></i>
@@ -255,6 +373,7 @@ export default class Order extends React.Component {
           animate={{
             opacity: this.state.endOpacity,
           }}
+          style={{ margin: "5px" }}
         >
           <Heading size={3} style={{ marginTop: "10px" }}>
             {config.steps[this.state.currentStep.id].title}
@@ -262,6 +381,7 @@ export default class Order extends React.Component {
           <hr />
           {content}
         </Block>
+        {this.getSuccessOverlay()}
       </Container>
     );
   }

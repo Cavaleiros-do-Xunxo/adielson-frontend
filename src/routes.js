@@ -8,6 +8,7 @@ import Menu from "./pages/menu/Menu";
 import Register from "./pages/register/Register";
 import Order from "./pages/order/Order";
 import NotFound from "./pages/notfound/NotFound";
+import MyOrders from "./pages/my-orders/MyOrders";
 
 export default function Routes() {
   return (
@@ -18,6 +19,7 @@ export default function Routes() {
         <Route path="/login" exact={true} component={Login} />
         <Route path="/register" exact={true} component={Register} />
         <Route path="/order" exact={true} component={Order} />
+        <Route path="/myorders" exact={true} component={MyOrders} />
         <Route path="*" component={NotFound}></Route>
       </Switch>
     </AnimatePresence>
