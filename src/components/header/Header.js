@@ -9,6 +9,7 @@ export default class Header extends React.Component {
     super(props);
 
     this.state = { isActive: false, showCart: false };
+    this.headerHeight = React.createRef();
   }
 
   setIsActive = (value) => {
@@ -19,9 +20,13 @@ export default class Header extends React.Component {
     this.setState({ showCart: value });
   };
 
+  componentDidMount = () => {
+    this.props.updateHeaderHeight(this.headerHeight.current.clientHeight);
+  };
+
   render = () => {
     return (
-      <Navbar style={{ backgroundColor: "#F5F0EB" }}>
+      <Navbar style={{ backgroundColor: "#F5F0EB" }} domRef={this.headerHeight}>
         <Navbar.Brand>
           <Navbar.Item renderAs={Link} to="/">
             <img

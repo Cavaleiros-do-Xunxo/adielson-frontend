@@ -9,17 +9,67 @@ import Register from "./pages/register/Register";
 import Order from "./pages/order/Order";
 import NotFound from "./pages/notfound/NotFound";
 import MyOrders from "./pages/my-orders/MyOrders";
+import Dashboard from "./pages/dashboard/Dashboard";
 
-export default function Routes() {
+export default function Routes(properties) {
   return (
     <AnimatePresence>
       <Switch>
-        <Route path="/" exact={true} component={Home} />
-        <Route path="/menu" exact={true} component={Menu} />
-        <Route path="/login" exact={true} component={Login} />
-        <Route path="/register" exact={true} component={Register} />
-        <Route path="/order" exact={true} component={Order} />
-        <Route path="/myorders" exact={true} component={MyOrders} />
+        <Route
+          path="/"
+          exact={true}
+          render={(props) => {
+            return <Home {...props} headerHeight={properties.headerHeight} />;
+          }}
+        />
+        <Route
+          path="/menu"
+          exact={true}
+          render={(props) => {
+            return <Menu {...props} headerHeight={properties.headerHeight} />;
+          }}
+        />
+        <Route
+          path="/login"
+          exact={true}
+          render={(props) => {
+            return <Login {...props} headerHeight={properties.headerHeight} />;
+          }}
+        />
+        <Route
+          path="/register"
+          exact={true}
+          render={(props) => {
+            return (
+              <Register {...props} headerHeight={properties.headerHeight} />
+            );
+          }}
+        />
+        <Route
+          path="/order"
+          exact={true}
+          render={(props) => {
+            return <Order {...props} headerHeight={properties.headerHeight} />;
+          }}
+        />
+        <Route
+          path="/myorders"
+          exact={true}
+          render={(props) => {
+            return (
+              <MyOrders {...props} headerHeight={properties.headerHeight} />
+            );
+          }}
+        />
+        <Route
+          path="/dashboard"
+          exact={true}
+          render={(props) => {
+            return (
+              <Dashboard {...props} headerHeight={properties.headerHeight} />
+            );
+          }}
+        />
         <Route path="*" component={NotFound}></Route>
       </Switch>
     </AnimatePresence>

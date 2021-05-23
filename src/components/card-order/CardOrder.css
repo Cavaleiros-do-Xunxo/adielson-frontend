@@ -1,0 +1,17 @@
+.card-order {
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.card-order-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-order:hover {
+  transform: scale(1.02);
+}
+
+.card-order:last-child {
+  margin-bottom: 0px;
+}
