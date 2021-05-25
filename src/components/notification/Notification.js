@@ -20,22 +20,16 @@ export default class Notification extends React.Component
           exit={{ opacity: 0 }}
         >
           <Modal.Card.Header>
-            <Modal.Card.Title><strong>Notificação</strong></Modal.Card.Title>
+            <Modal.Card.Title><strong>Notificações</strong></Modal.Card.Title>
           </Modal.Card.Header>
             <Modal.Card.Body>
             <Columns>
               <Columns.Column>
                 <Media>
-                  <Media.Item renderAs="figure" align="left">
-                    <Image
-                      size={64}
-                      alt="64x64"
-                      src={process.env.PUBLIC_URL + "/assets/adielson.png"}
-                    />
-                  </Media.Item>
+                  
                   <Media.Item>
                     <Heading 
-                      size={4}
+                      size={5}
                     >
                       Pedido n° xx
                     </Heading>
@@ -45,6 +39,7 @@ export default class Notification extends React.Component
                       <p><strong>Data:</strong> 24/05/2021</p>
                       <strong>Status:</strong> Está sendo preparado
                       <p><strong>Tempo estimado:</strong> 10min</p>
+                      <strong>Forma de pagamento:</strong> Visa
                     </Heading>
                   </Media.Item>
                 </Media>
