@@ -21,7 +21,6 @@ export default class CardMenu extends React.Component {
               </Heading>
             </Media.Item>
           </Media>
-
           <Content style={{ textAlign: "center" }}>
             <Button className="button is-danger is-rounded">
               <i className="fas fa-plus add-item-to-char-icon"></i> Adicionar
