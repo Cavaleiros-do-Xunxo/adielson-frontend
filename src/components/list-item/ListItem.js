@@ -19,7 +19,11 @@ export default class ListItem extends React.Component {
           style={{ alignSelf: "center" }}
         >
           <Image
-            src="http://bulma.io/images/placeholders/128x128.png"
+            src={
+              this.props.imageUrl
+                ? this.props.imageUrl
+                : "http://bulma.io/images/placeholders/128x128.png"
+            }
             size={64}
           />
         </Media.Item>
@@ -30,9 +34,11 @@ export default class ListItem extends React.Component {
         >
           <Content>
             <p>
-              <strong>Marmita</strong>
+              <strong>{this.props.title ? this.props.title : "Marmita"}</strong>
               <br />
-              Arroz, feijão e frango empanado
+              {this.props.description
+                ? this.props.description
+                : "Arroz, feijão e frango empanado"}
             </p>
           </Content>
         </Media.Item>

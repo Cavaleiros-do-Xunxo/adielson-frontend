@@ -1,0 +1,7 @@
+.card-order-margin-bottom {
+  margin-bottom: 5px;
+}
+
+.card-order-margin-bottom:last-child {
+  margin-bottom: 0px;
+}
