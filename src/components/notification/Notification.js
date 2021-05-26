@@ -1,8 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import{Columns, Media, Image, Heading, Modal} from "react-bulma-components";
-import ListItem from "../list-item/ListItem";
-
+import{Modal} from "react-bulma-components";
+import ListNotification from "../list-notification/ListNotification";
 export default class Notification extends React.Component
 {
   render = () =>{
@@ -20,49 +19,19 @@ export default class Notification extends React.Component
           exit={{ opacity: 0 }}
         >
           <Modal.Card.Header>
-            <Modal.Card.Title><strong>Notificações</strong></Modal.Card.Title>
+            <Modal.Card.Title>
+              <strong>Notificações</strong>
+            </Modal.Card.Title>
           </Modal.Card.Header>
             <Modal.Card.Body>
-            <Columns>
-              <Columns.Column>
-                <Media>
-                  
-                  <Media.Item>
-                    <Heading 
-                      size={5}
-                    >
-                      Pedido n° xx
-                    </Heading>
-                    <Heading 
-                      subtitle size={6}
-                    >  
-                      <p><strong>Data:</strong> 24/05/2021</p>
-                      <strong>Status:</strong> Está sendo preparado
-                      <p><strong>Tempo estimado:</strong> 10min</p>
-                      <strong>Forma de pagamento:</strong> Visa
-                    </Heading>
-                  </Media.Item>
-                </Media>
-              </Columns.Column>
+              <ListNotification/>
               <hr></hr>
-              <Columns.Column>
-                <ol style={{ listStyle:"none"}}>
-                  <strong><li>Produtos</li></strong>
-                  <li>1 Pastel de carne</li>
-                  <li>1 Pastel de queijo</li>
-                  <li>1 Pastel de calabresa</li>
-                  <li>1 Pastel de carne e panela</li>
-                </ol> 
-              </Columns.Column>
-            </Columns>
-            <hr></hr>
             </Modal.Card.Body>
           <Modal.Card.Footer justifyContent="center">
-           
+
           </Modal.Card.Footer>
         </Modal.Card>
       </Modal>
-      
     );
   }
 
