@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import{Modal} from "react-bulma-components";
-import ListNotification from "../list-notification/ListNotification";
+import ListNotificationItem from "../list-notification-item/ListNotificationItem";
 export default class Notification extends React.Component
 {
   render = () =>{
@@ -24,11 +24,9 @@ export default class Notification extends React.Component
             </Modal.Card.Title>
           </Modal.Card.Header>
             <Modal.Card.Body>
-              <ListNotification/>
-              <hr></hr>
+              <ListNotificationItem/>
             </Modal.Card.Body>
           <Modal.Card.Footer justifyContent="center">
-
           </Modal.Card.Footer>
         </Modal.Card>
       </Modal>
