@@ -1,6 +1,6 @@
 import React from "react";
 import{Box, Columns, Block, Heading, Content} from "react-bulma-components";
-export default class Notification extends React.Component
+export default class ListNotificationItem extends React.Component
 {
   render = () =>{
     return (
