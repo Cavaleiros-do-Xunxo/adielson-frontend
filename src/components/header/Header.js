@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Button } from "react-bulma-components";
-
 import Cart from "../cart/Cart";
+import Notification from "../notification/Notification";
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -18,6 +18,9 @@ export default class Header extends React.Component {
 
   showCart = (value) => {
     this.setState({ showCart: value });
+  };
+  showNotification = (value) =>{
+    this.setState({ showNotification: value });
   };
 
   componentDidMount = () => {
@@ -53,6 +56,18 @@ export default class Header extends React.Component {
           </Navbar.Container>
           <Navbar.Container align="end">
             <Navbar.Item href="#" renderAs="div">
+              <Button
+                className="is-ghost"
+                style={{ color: "black" }}
+                onClick={() => {
+                  this.setState({ showNotification: true });
+                }}
+              >
+                <i class="fa fa-bell" aria-hidden="true"></i>
+              </Button >
+              <Notification show={this.state.showNotification} showCb={this.showNotification} />
+
+
               <div className="buttons">
                 <Button
                   className="is-ghost"
