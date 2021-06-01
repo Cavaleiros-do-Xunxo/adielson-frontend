@@ -143,7 +143,6 @@ const MenuRegister = (props) => {
         return item.renderId !== id;
       })
     );
-    console.log(menuItems, id);
   };
 
   const showMenuItems = () => {
@@ -159,11 +158,19 @@ const MenuRegister = (props) => {
           description={product.description}
           price={product.price}
           onDelete={deleteMenuItem}
+          showDeleteButton={isEditMode}
         />
       );
     }
 
     return products;
+  };
+
+  const submitForm = () => {
+    if (isEditMode) {
+      // submit form
+      console.log("Submit form", menuItems);
+    }
   };
 
   return (
@@ -183,6 +190,7 @@ const MenuRegister = (props) => {
               rounded={true}
               onClick={() => {
                 setEditMode(!isEditMode);
+                submitForm();
               }}
             >
               {isEditMode ? "Finalizar edição" : "Editar"}

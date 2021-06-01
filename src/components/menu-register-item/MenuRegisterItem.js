@@ -2,6 +2,24 @@ import React from "react";
 import { Button, Content, Heading, Media, Image } from "react-bulma-components";
 
 const MenuRegisterItem = (props) => {
+  const showDeleteButton = () => {
+    if (props.showDeleteButton) {
+      return (
+        <Media.Item align="right">
+          <Button
+            color="danger"
+            rounded={true}
+            onClick={() => {
+              props.onDelete(props.renderId);
+            }}
+            style={{ marginTop: "10px" }}
+          >
+            Remover do cardápio
+          </Button>
+        </Media.Item>
+      );
+    }
+  };
   return (
     <Media>
       <Media.Item align="left">
@@ -23,18 +41,7 @@ const MenuRegisterItem = (props) => {
           </Heading>
         </Content>
       </Media.Item>
-      <Media.Item align="right">
-        <Button
-          color="danger"
-          rounded={true}
-          onClick={() => {
-            props.onDelete(props.renderId);
-          }}
-          style={{ marginTop: "10px" }}
-        >
-          Remover do cardápio
-        </Button>
-      </Media.Item>
+      {showDeleteButton()}
     </Media>
   );
 };
