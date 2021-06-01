@@ -10,6 +10,7 @@ import Order from "./pages/order/Order";
 import NotFound from "./pages/notfound/NotFound";
 import MyOrders from "./pages/my-orders/MyOrders";
 import Dashboard from "./pages/dashboard/Dashboard";
+import MenuRegister from "./pages/menu-register/MenuRegister";
 
 export default function Routes(properties) {
   return (
@@ -67,6 +68,15 @@ export default function Routes(properties) {
           render={(props) => {
             return (
               <Dashboard {...props} headerHeight={properties.headerHeight} />
+            );
+          }}
+        />
+        <Route
+          path="/menuregister"
+          exact={true}
+          render={(props) => {
+            return (
+              <MenuRegister {...props} headerHeight={properties.headerHeight} />
             );
           }}
         />
