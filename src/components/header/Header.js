@@ -19,7 +19,7 @@ export default class Header extends React.Component {
   showCart = (value) => {
     this.setState({ showCart: value });
   };
-  showNotification = (value) =>{
+  showNotification = (value) => {
     this.setState({ showNotification: value });
   };
 
@@ -63,10 +63,12 @@ export default class Header extends React.Component {
                   this.setState({ showNotification: true });
                 }}
               >
-                <i class="fa fa-bell" aria-hidden="true"></i>
-              </Button >
-              <Notification show={this.state.showNotification} showCb={this.showNotification} />
-
+                <i className="fa fa-bell" aria-hidden="true"></i>
+              </Button>
+              <Notification
+                show={this.state.showNotification}
+                showCb={this.showNotification}
+              />
 
               <div className="buttons">
                 <Button
