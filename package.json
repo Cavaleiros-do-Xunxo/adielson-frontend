@@ -9,6 +9,7 @@
     "express": "^4.17.1",
     "framer-motion": "^4.1.13",
     "install": "^0.13.0",
+    "moment": "^2.29.1",
     "npm": "^7.11.2",
     "payment": "^2.4.3",
     "react": "^17.0.2",

@@ -1,0 +1,8 @@
+.list-order-item {
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.list-order-item:hover {
+  transform: scale(1.02);
+}
