@@ -1,5 +1,12 @@
 import React from "react";
-import { Card, Content, Heading, Form, Button } from "react-bulma-components";
+import {
+  Block,
+  Card,
+  Content,
+  Heading,
+  Form,
+  Button,
+} from "react-bulma-components";
 
 const CardRegister = (props) => {
   return (
@@ -13,8 +20,12 @@ const CardRegister = (props) => {
             <Form.Label>Nome</Form.Label>
             <Form.Control>
               <Form.Input
+                name="name"
                 type={"text"}
                 placeholder={"Insira seu nome"}
+                onChange={(e) => {
+                  props.handleRegisterInputs(e);
+                }}
               ></Form.Input>
             </Form.Control>
           </Form.Field>
@@ -23,8 +34,12 @@ const CardRegister = (props) => {
             <Form.Label>Telefone</Form.Label>
             <Form.Control>
               <Form.Input
+                name="phone"
                 type={"text"}
                 placeholder={"Insira seu número de telefone"}
+                onChange={(e) => {
+                  props.handleRegisterInputs(e);
+                }}
               ></Form.Input>
             </Form.Control>
           </Form.Field>
@@ -33,8 +48,12 @@ const CardRegister = (props) => {
             <Form.Label>CPF</Form.Label>
             <Form.Control>
               <Form.Input
+                name="cpf"
                 type={"text"}
                 placeholder={"Insira seu número de CPF"}
+                onChange={(e) => {
+                  props.handleRegisterInputs(e);
+                }}
               ></Form.Input>
             </Form.Control>
           </Form.Field>
@@ -43,8 +62,12 @@ const CardRegister = (props) => {
             <Form.Label>E-mail</Form.Label>
             <Form.Control>
               <Form.Input
+                name="email"
                 type={"text"}
                 placeholder={"Insira seu endereço de e-mail"}
+                onChange={(e) => {
+                  props.handleRegisterInputs(e);
+                }}
               ></Form.Input>
             </Form.Control>
           </Form.Field>
@@ -53,15 +76,39 @@ const CardRegister = (props) => {
             <Form.Label>Senha</Form.Label>
             <Form.Control>
               <Form.Input
+                name="password"
                 type={"password"}
                 placeholder={"Insira uma senha"}
+                onChange={(e) => {
+                  props.handleRegisterInputs(e);
+                }}
               ></Form.Input>
             </Form.Control>
           </Form.Field>
 
+          <Block
+            renderAs="p"
+            textAlign="center"
+            style={
+              props.errorOccured
+                ? { color: "#EA1D2C" }
+                : { display: "none", color: "#EA1D2C" }
+            }
+          >
+            Um erro ocorreu ao registrar seu usuário, tente novamente.
+          </Block>
+
           <Form.Field className="field has-addons has-addons-centered">
             <Form.Control className="control">
-              <Button color="success">Cadastrar</Button>
+              <Button
+                color="success"
+                disabled={props.isSubmiting}
+                onClick={() => {
+                  props.onSubmit();
+                }}
+              >
+                Cadastrar
+              </Button>
             </Form.Control>
           </Form.Field>
         </Content>

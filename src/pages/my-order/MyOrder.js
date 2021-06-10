@@ -43,7 +43,7 @@ const MyOrder = (props) => {
         total: 10.0,
       });
     }, 1000);
-  });
+  }, []);
 
   const getStatus = () => {
     const statusBlock = [];
