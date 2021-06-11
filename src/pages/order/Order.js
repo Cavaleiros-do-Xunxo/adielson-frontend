@@ -229,7 +229,7 @@ export default class Order extends React.Component {
 
   getSuccessOverlay = () => {
     if (this.state.showSuccessOverlay) {
-      return <SuccessOverlay />;
+      return <SuccessOverlay text="Pedido realizado com sucesso!" />;
     }
   };
 

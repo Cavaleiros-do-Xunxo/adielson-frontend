@@ -1,11 +1,75 @@
-import React from "react";
+import React, { useState } from "react";
 import CardRegister from "../../components/card-register/CardRegister";
 import { motion } from "framer-motion";
 import { Block, Container, Columns } from "react-bulma-components";
 
+import api from "../../services/api";
+import SessionManager from "../../services/sessionManager";
+
 import "./Register.css";
+import SuccessOverlay from "../../components/success-overlay/SuccessOverlay";
 
 const Register = (props) => {
+  const [user, setUser] = useState({
+    name: "",
+    phone: "",
+    cpf: "",
+    email: "",
+    password: "",
+  });
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+  const [isSubmiting, setIsSubmiting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleRegisterInputs = (event) => {
+    const { name, value } = event.target;
+
+    setUser({ ...user, [name]: value });
+  };
+
+  const onSubmit = async () => {
+    try {
+      setIsSubmiting(true);
+      setError("");
+
+      const registerResponse = await api.registerUser(user);
+
+      if (registerResponse.status === 200) {
+        setShowSuccessOverlay(true);
+
+        SessionManager.setAuthToken(registerResponse.data.token);
+
+        const userResponse = await api.getUserFromCurrentSession();
+
+        SessionManager.setCurrentUser(userResponse.data);
+
+        setTimeout(() => {
+          props.history.push("/menu");
+        }, 3000);
+      }
+    } catch (e) {
+      if (e.response && e.response.status === 400 && e.response.data) {
+        setError(e.response.data.message);
+      } else {
+        console.error(
+          "An unexpected error has occurred when registering user",
+          e
+        );
+        setError(
+          "Um erro aconteceu ao processar seu cadastro, tente novamente mais tarde ou entre em contato com o suporte."
+        );
+      }
+    } finally {
+      setIsSubmiting(false);
+    }
+  };
+
+  const onSuccess = () => {
+    if (showSuccessOverlay === true) {
+      return <SuccessOverlay text="Usuário cadastrado com sucesso!" />;
+    }
+  };
+
   return (
     <Block
       renderAs={motion.div}
@@ -27,7 +91,12 @@ const Register = (props) => {
           </Columns.Column>
           <Columns.Column size={"half"}>
             <Block className="register-card">
-              <CardRegister />
+              <CardRegister
+                handleRegisterInputs={handleRegisterInputs}
+                onSubmit={onSubmit}
+                isSubmiting={isSubmiting}
+                error={error}
+              />
             </Block>
           </Columns.Column>
         </Columns>
@@ -51,6 +120,7 @@ const Register = (props) => {
           </g>
         </svg>
       </Block>
+      {onSuccess()}
     </Block>
   );
 };

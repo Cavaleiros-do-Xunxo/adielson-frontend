@@ -16,9 +16,10 @@ export default class CardMenu extends React.Component {
           <Media>
             <Media.Item>
               <Heading size={"4"}>Marmita</Heading>
-              <Heading subtitle size={"6"}>
+              <Heading subtitle size={"6"} style={{ marginBottom: "7px" }}>
                 Arroz, feijão, frango empanado.
               </Heading>
+              <p style={{ color: "#48c774" }}>R$10,00</p>
             </Media.Item>
           </Media>
           <Content style={{ textAlign: "center" }}>

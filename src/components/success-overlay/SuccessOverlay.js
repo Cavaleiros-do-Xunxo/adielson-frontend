@@ -1,6 +1,6 @@
 import { Block, Heading } from "react-bulma-components";
 
-export default function SuccessOverlay() {
+export default function SuccessOverlay(props) {
   return (
     <Block
       style={{
@@ -28,7 +28,7 @@ export default function SuccessOverlay() {
           className="fas fa-check-circle fa-5x"
           style={{ color: "#48c78e", marginBottom: "10px" }}
         ></i>
-        <Heading size={6}>Pedido realizado com sucesso!</Heading>
+        <Heading size={6}>{props.text}</Heading>
       </Block>
     </Block>
   );
