@@ -68,12 +68,14 @@ const CardLogin = (props) => {
             renderAs="p"
             textAlign="center"
             style={
-              props.errorOccured
+              props.errorOccurred
                 ? { color: "#EA1D2C" }
                 : { display: "none", color: "#EA1D2C" }
             }
           >
-            Um erro ocorreu ao realizar o login, tente novamente.
+            Não foi possível realizar o login.
+            <br />
+            Verifique se seu endereço de e-mail e sua senha estão corretos.
           </Block>
 
           <Form.Field className="field has-addons has-addons-centered">

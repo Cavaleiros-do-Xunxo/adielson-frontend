@@ -19,7 +19,7 @@ const Register = (props) => {
   });
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
-  const [errorOccurred, setErrorOccurred] = useState(false);
+  const [error, setError] = useState("");
 
   const handleRegisterInputs = (event) => {
     const { name, value } = event.target;
@@ -30,7 +30,7 @@ const Register = (props) => {
   const onSubmit = async () => {
     try {
       setIsSubmiting(true);
-      setErrorOccurred(false);
+      setError("");
 
       const registerResponse = await api.registerUser(user);
 
@@ -48,11 +48,17 @@ const Register = (props) => {
         }, 3000);
       }
     } catch (e) {
-      console.error(
-        "An unexpected error has occurred when registering user",
-        e
-      );
-      setErrorOccurred(true);
+      if (e.response && e.response.status === 400 && e.response.data) {
+        setError(e.response.data.message);
+      } else {
+        console.error(
+          "An unexpected error has occurred when registering user",
+          e
+        );
+        setError(
+          "Um erro aconteceu ao processar seu cadastro, tente novamente mais tarde ou entre em contato com o suporte."
+        );
+      }
     } finally {
       setIsSubmiting(false);
     }
@@ -89,7 +95,7 @@ const Register = (props) => {
                 handleRegisterInputs={handleRegisterInputs}
                 onSubmit={onSubmit}
                 isSubmiting={isSubmiting}
-                errorOccured={errorOccurred}
+                error={error}
               />
             </Block>
           </Columns.Column>

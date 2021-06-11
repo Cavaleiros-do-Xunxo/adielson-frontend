@@ -8,6 +8,14 @@ import {
   Button,
 } from "react-bulma-components";
 
+const config = {
+  translateMessages: {
+    "CPF is taken": "CPF já está cadastrado!",
+    "Missing required fields": "Os campos obrigatórios não foram preenchidos!",
+    "Email is taken": "O endereço de e-mail informado já foi cadastrado!",
+  },
+};
+
 const CardRegister = (props) => {
   return (
     <Card>
@@ -90,12 +98,12 @@ const CardRegister = (props) => {
             renderAs="p"
             textAlign="center"
             style={
-              props.errorOccured
+              props.error !== ""
                 ? { color: "#EA1D2C" }
                 : { display: "none", color: "#EA1D2C" }
             }
           >
-            Um erro ocorreu ao registrar seu usuário, tente novamente.
+            {config.translateMessages[props.error]}
           </Block>
 
           <Form.Field className="field has-addons has-addons-centered">
