@@ -4,6 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import Header from "./header/Header";
 import Routes from "../routes";
 
+import { AuthProvider } from "../services/authProvider";
+
 import "./App.css";
 
 export default function App() {
@@ -11,8 +13,10 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Header updateHeaderHeight={setHeaderHeight} />
-      <Routes headerHeight={headerHeight} />
+      <AuthProvider>
+        <Header updateHeaderHeight={setHeaderHeight} />
+        <Routes headerHeight={headerHeight} />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

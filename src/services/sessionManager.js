@@ -14,12 +14,15 @@ class SessionManager {
   }
 
   setAuthToken(token) {
+    this.deleteCurrentAuthToken();
+    sessionStorage.setItem(config.sessionTokenKey, token);
+    this._authToken = token;
+  }
+
+  deleteCurrentAuthToken() {
     if (this.getAuthToken()) {
       sessionStorage.removeItem(config.sessionTokenKey);
     }
-
-    sessionStorage.setItem(config.sessionTokenKey, token);
-    this._authToken = token;
   }
 
   getCurrentUser() {
@@ -31,14 +34,23 @@ class SessionManager {
   }
 
   setCurrentUser(user) {
-    if (this.getCurrentUser()) {
-      sessionStorage.removeItem(config.sessionUserKey);
-    }
+    this.deleteCurrentUser();
 
     const encodedUser = btoa(JSON.stringify(user));
 
     sessionStorage.setItem(config.sessionUserKey, encodedUser);
     this._currentUser = encodedUser;
+  }
+
+  deleteCurrentUser() {
+    if (this.getCurrentUser()) {
+      sessionStorage.removeItem(config.sessionUserKey);
+    }
+  }
+
+  clearSession() {
+    this.deleteCurrentAuthToken();
+    this.deleteCurrentUser();
   }
 }
 

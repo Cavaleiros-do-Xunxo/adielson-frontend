@@ -13,6 +13,7 @@ import MenuRegisterItem from "../../components/menu-register-item/MenuRegisterIt
 
 const config = {
   defaultNewProduct: {
+    id: "",
     renderId: "",
     title: "",
     description: "",

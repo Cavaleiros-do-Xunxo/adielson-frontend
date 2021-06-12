@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Block, Container, Columns } from "react-bulma-components";
 
@@ -7,6 +7,7 @@ import SuccessOverlay from "../../components/success-overlay/SuccessOverlay";
 
 import api from "../../services/api";
 import SessionManager from "../../services/sessionManager";
+import { AuthContext } from "../../services/authProvider";
 
 import "./Login.css";
 
@@ -15,6 +16,14 @@ const Login = (props) => {
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
+  const { isAuthenticated, setIsAuthenticated, setIsAdmin } =
+    useContext(AuthContext);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push("/menu");
+    }
+  });
 
   const onSubmit = async () => {
     try {
@@ -31,6 +40,12 @@ const Login = (props) => {
         const userResponse = await api.getUserFromCurrentSession();
 
         SessionManager.setCurrentUser(userResponse.data);
+
+        setIsAuthenticated(true);
+
+        if (userResponse.data.role === "ADMIN") {
+          setIsAdmin(true);
+        }
 
         setTimeout(() => {
           props.history.push("/menu");

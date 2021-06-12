@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import CardRegister from "../../components/card-register/CardRegister";
 import { motion } from "framer-motion";
 import { Block, Container, Columns } from "react-bulma-components";
 
 import api from "../../services/api";
 import SessionManager from "../../services/sessionManager";
+import { AuthContext } from "../../services/authProvider";
 
 import "./Register.css";
 import SuccessOverlay from "../../components/success-overlay/SuccessOverlay";
@@ -20,6 +21,14 @@ const Register = (props) => {
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [error, setError] = useState("");
+  const { isAuthenticated, setIsAuthenticated, setIsAdmin } =
+    useContext(AuthContext);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push("/menu");
+    }
+  });
 
   const handleRegisterInputs = (event) => {
     const { name, value } = event.target;
@@ -42,6 +51,12 @@ const Register = (props) => {
         const userResponse = await api.getUserFromCurrentSession();
 
         SessionManager.setCurrentUser(userResponse.data);
+
+        setIsAuthenticated(true);
+
+        if (userResponse.data.role === "ADMIN") {
+          setIsAdmin(true);
+        }
 
         setTimeout(() => {
           props.history.push("/menu");
