@@ -21,16 +21,6 @@ const config = {
     category: "",
     inMenu: false,
   },
-  requiredCategories: [
-    {
-      name: "Pastel",
-      description: "Pastéis e derivados",
-    },
-    {
-      name: "Marmita",
-      description: "Marmitas no geral",
-    },
-  ],
 };
 
 const MenuRegister = (props) => {
