@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import uuid from "react-uuid";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Box,
@@ -10,16 +9,28 @@ import {
   Heading,
 } from "react-bulma-components";
 import MenuRegisterItem from "../../components/menu-register-item/MenuRegisterItem";
+import api from "../../services/api";
 
 const config = {
   defaultNewProduct: {
     id: "",
-    renderId: "",
-    title: "",
+    name: "",
     description: "",
     price: "",
-    imageUrl: "",
+    image: "",
+    category: "",
+    inMenu: false,
   },
+  requiredCategories: [
+    {
+      name: "Pastel",
+      description: "Pastéis e derivados",
+    },
+    {
+      name: "Marmita",
+      description: "Marmitas no geral",
+    },
+  ],
 };
 
 const MenuRegister = (props) => {
@@ -27,21 +38,95 @@ const MenuRegister = (props) => {
   const [canShowAddMenuItem, setCanShowAddMenuItem] = useState(false);
   const [newProduct, setNewProduct] = useState(config.defaultNewProduct);
   const [menuItems, setMenuItems] = useState([]);
+  const [itemCategories, setItemCategories] = useState([]);
+  const [disabledButtons, setDisabledButtons] = useState(false);
+
+  const fetchCategories = async () => {
+    const categories = [];
+
+    try {
+      const response = await api.getCategories();
+
+      if (response && response.data && Array.isArray(response.data)) {
+        for (const category of response.data) {
+          categories.push(category);
+        }
+      }
+
+      setItemCategories(categories);
+    } catch (e) {
+      console.log("Failed to fetch categories");
+    }
+  };
+
+  const fetchMenuItems = async () => {
+    try {
+      const response = await api.listMenuItems();
+      setMenuItems(response.data);
+    } catch (e) {
+      console.error("Failed to list menu items");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchMenuItems();
+  }, []);
+
+  const buildCategoriesSelect = () => {
+    const categoriesOptions = [];
+
+    categoriesOptions.push(<option key="default" value=""></option>);
+
+    for (const category of itemCategories) {
+      categoriesOptions.push(
+        <option key={category.id} value={category.id}>
+          {category.name}
+        </option>
+      );
+    }
+
+    return (
+      <Form.Field>
+        <Form.Label>Categoria</Form.Label>
+        <Form.Control>
+          <Form.Select
+            name="category"
+            value={newProduct.category}
+            onChange={(e) => handleNewProductInputChange(e)}
+          >
+            {categoriesOptions}
+          </Form.Select>
+        </Form.Control>
+      </Form.Field>
+    );
+  };
 
   const handleNewProductInputChange = (event) => {
     const { name, value } = event.target;
     setNewProduct({ ...newProduct, [name]: value });
   };
 
-  const addNewMenuItem = () => {
+  const addNewMenuItem = async () => {
+    setDisabledButtons(true);
+
     const _menuItems = menuItems;
 
-    newProduct.renderId = uuid();
-    _menuItems.push(newProduct);
+    try {
+      const response = await api.createMenuItem(newProduct);
 
-    setMenuItems(_menuItems);
-    setNewProduct(config.defaultNewProduct);
-    setCanShowAddMenuItem(false);
+      setNewProduct(response.data);
+
+      _menuItems.push(response.data);
+
+      setMenuItems(_menuItems);
+      setNewProduct(config.defaultNewProduct);
+      setCanShowAddMenuItem(false);
+    } catch (e) {
+      console.error("Failed to add new menu item");
+    } finally {
+      setDisabledButtons(false);
+    }
   };
 
   const showAddMenuItem = () => {
@@ -53,11 +138,11 @@ const MenuRegister = (props) => {
       <Box>
         <Heading size={4}>Adicionar novo item</Heading>
         <Form.Field>
-          <Form.Label>Título</Form.Label>
+          <Form.Label>Nome do item do cardápio</Form.Label>
           <Form.Control>
             <Form.Input
               type="text"
-              name="title"
+              name="name"
               placeholder="Título do item do cardápio"
               onChange={(e) => handleNewProductInputChange(e)}
             />
@@ -90,16 +175,18 @@ const MenuRegister = (props) => {
           <Form.Control>
             <Form.Input
               type="text"
-              name="imageUrl"
+              name="image"
               placeholder="Url da imagem do item"
               onChange={(e) => handleNewProductInputChange(e)}
             />
           </Form.Control>
         </Form.Field>
+        {buildCategoriesSelect()}
         <hr />
         <Button.Group justifyContent="center">
           <Button
             color="danger"
+            disabled={disabledButtons}
             onClick={() => {
               setNewProduct(config.defaultNewProduct);
               setCanShowAddMenuItem(false);
@@ -109,6 +196,7 @@ const MenuRegister = (props) => {
           </Button>
           <Button
             color="success"
+            disabled={disabledButtons}
             onClick={() => {
               addNewMenuItem();
             }}
@@ -138,12 +226,60 @@ const MenuRegister = (props) => {
     );
   };
 
-  const deleteMenuItem = (id) => {
-    setMenuItems(
-      menuItems.filter((item) => {
-        return item.renderId !== id;
-      })
-    );
+  const deleteMenuItem = async (id) => {
+    try {
+      setDisabledButtons(true);
+
+      await api.deleteMenuItem(id);
+
+      setMenuItems(
+        menuItems.filter((item) => {
+          return item.id !== id;
+        })
+      );
+    } catch (e) {
+      console.error("Failed to delete Menu Item");
+    } finally {
+      setDisabledButtons(false);
+    }
+  };
+
+  const showOnMenu = async (id, showOnMenu) => {
+    let updatedItem = null;
+
+    const _menuItems = menuItems.map((item, _) => {
+      if (item.id === id) {
+        item.inMenu = showOnMenu;
+        updatedItem = item;
+      }
+
+      return item;
+    });
+
+    setMenuItems(_menuItems);
+
+    try {
+      await api.updateMenuItem(id, {
+        name: updatedItem.name,
+        price: updatedItem.price,
+        image: updatedItem.image,
+        description: updatedItem.description,
+        inMenu: updatedItem.inMenu,
+        category: updatedItem.category.id,
+      });
+    } catch (e) {
+      console.error("Failed to update menu item");
+
+      const _menuItems = menuItems.map((item, _) => {
+        if (item.id === id) {
+          item.inMenu = !showOnMenu;
+        }
+
+        return item;
+      });
+
+      setMenuItems(_menuItems);
+    }
   };
 
   const showMenuItems = () => {
@@ -152,26 +288,23 @@ const MenuRegister = (props) => {
     for (const product of menuItems) {
       products.push(
         <MenuRegisterItem
-          key={product.renderId}
-          renderId={product.renderId}
-          imageUrl={product.imageUrl}
-          title={product.title}
+          key={product.id}
+          id={product.id}
+          image={product.image}
+          name={product.name}
           description={product.description}
           price={product.price}
+          inMenu={product.inMenu}
           onDelete={deleteMenuItem}
           showDeleteButton={isEditMode}
+          showInMenuButton={isEditMode}
+          showOnMenu={showOnMenu}
+          disableButtons={disabledButtons}
         />
       );
     }
 
     return products;
-  };
-
-  const submitForm = () => {
-    if (isEditMode) {
-      // submit form
-      console.log("Submit form", menuItems);
-    }
   };
 
   return (
@@ -191,7 +324,6 @@ const MenuRegister = (props) => {
               rounded={true}
               onClick={() => {
                 setEditMode(!isEditMode);
-                submitForm();
               }}
             >
               {isEditMode ? "Finalizar edição" : "Editar"}

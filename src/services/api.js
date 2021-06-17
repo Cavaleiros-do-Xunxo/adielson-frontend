@@ -34,6 +34,24 @@ const api = {
   authenticate: (data) => {
     return _http.post("/login", data);
   },
+  getCategories: () => {
+    return _http.get("/categories");
+  },
+  createCategory: (data) => {
+    return _http.post("/category", data, { headers: _getAuthHeader() });
+  },
+  createMenuItem: (data) => {
+    return _http.post("/items", data, { headers: _getAuthHeader() });
+  },
+  listMenuItems: () => {
+    return _http.get("/items");
+  },
+  deleteMenuItem: (id) => {
+    return _http.delete(`/items/${id}`, { headers: _getAuthHeader() });
+  },
+  updateMenuItem: (id, data) => {
+    return _http.put(`/items/${id}`, data, { headers: _getAuthHeader() });
+  },
 };
 
 export default api;
