@@ -1,46 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CardMenu from "../../components/card-menu/CardMenu";
 import { motion } from "framer-motion";
-import { Block, Container, Columns, Heading } from "react-bulma-components";
+import { Container, Columns, Heading } from "react-bulma-components";
+
+import Spinner from "../../components/spinner/Spinner";
+import api from "../../services/api";
 
 import "./Menu.css";
 
-export default class Menu extends React.Component {
-  render() {
-    const mockCards = [];
+const Menu = (props) => {
+  const [dailyMenuItems, setDailyMenuItems] = useState([]);
 
-    for (let i = 0; i < 6; i++) {
-      mockCards.push(
-        <Columns.Column key={i} size={"one-quarter"}>
-          <Block className="card-item">
-            <CardMenu />
-          </Block>
+  const fetchDailyMenuItems = async () => {
+    try {
+      const response = await api.listMenuItems();
+      setDailyMenuItems(response.data);
+    } catch (e) {
+      console.error("Failed to load daily menu items", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchDailyMenuItems();
+  }, []);
+
+  const buildDailyMenu = () => {
+    const menuItems = dailyMenuItems.map((item, _) => {
+      return (
+        <Columns.Column
+          key={item.id}
+          size={"one-quarter"}
+          style={{ display: "flex" }}
+        >
+          <CardMenu menuItem={item} />
         </Columns.Column>
       );
-    }
+    });
 
-    return (
-      <Container
-        renderAs={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="menu-container"
+    return menuItems;
+  };
+
+  return (
+    <Container
+      renderAs={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="menu-container"
+    >
+      <Columns>
+        <Columns.Column>
+          <Heading
+            className="menu-title"
+            size={3}
+            style={{ marginTop: "10px" }}
+          >
+            Cardápio do dia
+          </Heading>
+          <hr />
+        </Columns.Column>
+      </Columns>
+      <Columns
+        flexWrap={"wrap"}
+        style={dailyMenuItems.length === 0 ? { justifyContent: "center" } : {}}
       >
-        <Columns>
-          <Columns.Column>
-            <Heading
-              className="menu-title"
-              size={3}
-              style={{ marginTop: "10px" }}
-            >
-              Cardápio do dia
-            </Heading>
-            <hr />
-          </Columns.Column>
-        </Columns>
-        <Columns flexWrap={"wrap"}>{mockCards}</Columns>
-      </Container>
-    );
-  }
-}
+        {dailyMenuItems.length > 0 ? buildDailyMenu() : <Spinner />}
+      </Columns>
+    </Container>
+  );
+};
+
+export default Menu;

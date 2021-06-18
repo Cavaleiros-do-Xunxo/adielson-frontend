@@ -8,7 +8,9 @@ import {
   Form,
   Heading,
 } from "react-bulma-components";
+
 import MenuRegisterItem from "../../components/menu-register-item/MenuRegisterItem";
+import Spinner from "../../components/spinner/Spinner";
 import api from "../../services/api";
 
 const config = {
@@ -322,7 +324,9 @@ const MenuRegister = (props) => {
         </Block>
         <hr />
         {showAddMenuItem()}
-        {showMenuItems()}
+        <Block style={menuItems.length === 0 ? { textAlign: "center" } : {}}>
+          {menuItems.length > 0 ? showMenuItems() : <Spinner />}
+        </Block>
       </Box>
     </Container>
   );

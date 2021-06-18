@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Block, Navbar, Button } from "react-bulma-components";
 import Cart from "../cart/Cart";
-import Notification from "../notification/Notification";
 
 import { AuthContext } from "../../services/authProvider";
 import SessionManager from "../../services/sessionManager";
@@ -11,7 +10,6 @@ import api from "../../services/api";
 const Header = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [showCart, setShowCart] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
   const headerHeight = useRef(null);
   const { isAuthenticated, setIsAuthenticated, setIsAdmin } =
     useContext(AuthContext);
@@ -100,21 +98,7 @@ const Header = (props) => {
         </Navbar.Container>
         <Navbar.Container align="end">
           <Navbar.Item href="#" renderAs="div">
-            <Button
-              className="is-ghost"
-              style={{ color: "black" }}
-              onClick={() => {
-                setShowNotification(true);
-              }}
-            >
-              <i className="fa fa-bell" aria-hidden="true"></i>
-            </Button>
-            <Notification
-              show={showNotification}
-              showCb={setShowNotification}
-            />
-
-            <div className="buttons">
+            <Block className="buttons">
               <Button
                 className="is-ghost"
                 style={{ color: "black" }}
@@ -127,7 +111,7 @@ const Header = (props) => {
               <Cart show={showCart} showCb={setShowCart} />
               {renderLoginAndRegister()}
               {renderExit()}
-            </div>
+            </Block>
           </Navbar.Item>
         </Navbar.Container>
       </Navbar.Menu>
