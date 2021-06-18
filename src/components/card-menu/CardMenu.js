@@ -9,7 +9,7 @@ const CardMenu = (props) => {
   };
 
   return (
-    <Card style={{ width: "500px" }}>
+    <Card style={{ width: "500px", display: "flex", flexDirection: "column" }}>
       <Card.Image
         size={"4by3"}
         src={
@@ -18,7 +18,14 @@ const CardMenu = (props) => {
         }
         alt="Comida"
       />
-      <Card.Content>
+      <Card.Content
+        style={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <Media>
           <Media.Item>
             <Heading size={"4"}>
@@ -32,7 +39,14 @@ const CardMenu = (props) => {
             </p>
           </Media.Item>
         </Media>
-        <Content style={{ textAlign: "center" }}>
+        <Content
+          style={{
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "end",
+          }}
+        >
           <Button className="button is-danger is-rounded">
             <i className="fas fa-plus add-item-to-char-icon"></i> Adicionar
           </Button>
