@@ -14,6 +14,7 @@ _http.interceptors.response.use(
   (error) => {
     if (error.status === 401) {
       SessionManager.clearSession();
+      window.location.reload();
     }
 
     return Promise.reject(error);

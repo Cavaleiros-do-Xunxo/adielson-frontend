@@ -14,15 +14,30 @@ const Menu = (props) => {
   const fetchDailyMenuItems = async () => {
     try {
       const response = await api.listMenuItems();
-      setDailyMenuItems(response.data);
+
+      if (response && response.data && Array.isArray(response.data)) {
+        const menuItems = response.data.filter((item, _) => {
+          return item.inMenu;
+        });
+
+        setDailyMenuItems(menuItems);
+      }
     } catch (e) {
       console.error("Failed to load daily menu items", e);
     }
   };
 
   useEffect(() => {
-    fetchDailyMenuItems();
-  }, []);
+    let isMounted = true;
+
+    if (isMounted) {
+      fetchDailyMenuItems();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [setDailyMenuItems]);
 
   const buildDailyMenu = () => {
     const menuItems = dailyMenuItems.map((item, _) => {

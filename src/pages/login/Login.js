@@ -20,9 +20,15 @@ const Login = (props) => {
     useContext(AuthContext);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    let isMounted = true;
+
+    if (isAuthenticated && isMounted) {
       props.history.push("/menu");
     }
+
+    return () => {
+      isMounted = false;
+    };
   });
 
   const onSubmit = async () => {
