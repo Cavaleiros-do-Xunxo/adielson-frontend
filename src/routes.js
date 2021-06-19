@@ -12,6 +12,7 @@ import MyOrders from "./pages/my-orders/MyOrders";
 import MyOrder from "./pages/my-order/MyOrder";
 import Dashboard from "./pages/dashboard/Dashboard";
 import MenuRegister from "./pages/menu-register/MenuRegister";
+import PurgeSession from "./components/purge-session/PurgeSession";
 
 export default function Routes(properties) {
   return (
@@ -90,6 +91,7 @@ export default function Routes(properties) {
             );
           }}
         />
+        <Route path="/purgesession" exct={true} component={PurgeSession} />
         <Route path="*" component={NotFound}></Route>
       </Switch>
     </AnimatePresence>

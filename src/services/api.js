@@ -12,9 +12,9 @@ _http.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.status === 401) {
+    if (error && error.response && error.response.status === 401) {
       SessionManager.clearSession();
-      window.location.reload();
+      window.location.pathname = "/purgesession";
     }
 
     return Promise.reject(error);
