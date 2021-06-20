@@ -8,8 +8,8 @@ import {
   Content,
 } from "react-bulma-components";
 
-export default class ListItem extends React.Component {
-  content = () => {
+const ListItem = (props) => {
+  const content = () => {
     return (
       <Media renderAs="div">
         <Media.Item
@@ -20,8 +20,8 @@ export default class ListItem extends React.Component {
         >
           <Image
             src={
-              this.props.imageUrl
-                ? this.props.imageUrl
+              props.image
+                ? props.image
                 : "http://bulma.io/images/placeholders/128x128.png"
             }
             size={64}
@@ -34,11 +34,9 @@ export default class ListItem extends React.Component {
         >
           <Content>
             <p>
-              <strong>{this.props.title ? this.props.title : "Marmita"}</strong>
+              <strong>{props.name}</strong>
               <br />
-              {this.props.description
-                ? this.props.description
-                : "Arroz, feijão e frango empanado"}
+              {props.description}
             </p>
           </Content>
         </Media.Item>
@@ -55,6 +53,14 @@ export default class ListItem extends React.Component {
             <Button
               color="ghost"
               style={{ color: "black", marginRight: "-8px" }}
+              onClick={() => {
+                props.addItem({
+                  id: props.id,
+                  name: props.name,
+                  description: props.description,
+                  image: props.image,
+                });
+              }}
             >
               <i className="fas fa-plus"></i>
             </Button>
@@ -64,12 +70,15 @@ export default class ListItem extends React.Component {
               size="small"
               rounded={true}
               style={{ width: "40px" }}
-              value={0}
+              value={props.count}
               textAlign="center"
             />
             <Button
               color="ghost"
               style={{ color: "black", marginLeft: "-8px" }}
+              onClick={() => {
+                props.removeItem(props.id);
+              }}
             >
               <i className="fas fa-minus"></i>
             </Button>
@@ -78,22 +87,21 @@ export default class ListItem extends React.Component {
       </Media>
     );
   };
-
-  render() {
-    if (!this.props.useBoxWrap) {
-      return this.content();
-    }
-
-    return (
-      <Box
-        style={{
-          margin: "7px",
-          boxShadow:
-            "0 .5em 1em -.125em rgba(10,10,10,.1),0 0 0 1px rgba(10,10,10,.1)",
-        }}
-      >
-        {this.content()}
-      </Box>
-    );
+  if (!props.useBoxWrap) {
+    return content();
   }
-}
+
+  return (
+    <Box
+      style={{
+        margin: "7px",
+        boxShadow:
+          "0 .5em 1em -.125em rgba(10,10,10,.1),0 0 0 1px rgba(10,10,10,.1)",
+      }}
+    >
+      {content()}
+    </Box>
+  );
+};
+
+export default ListItem;

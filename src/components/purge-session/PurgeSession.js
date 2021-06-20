@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { Redirect } from "react-router-dom";
 
-import { AuthContext } from "../../services/authProvider";
+import { SessionContext } from "../../services/sessionProvider";
 
 const PurgeSession = () => {
   const { isAuthenticated, setIsAuthenticated, isAdmin, setIsAdmin } =
-    useContext(AuthContext);
+    useContext(SessionContext);
 
   if (isAuthenticated) {
     setIsAuthenticated(false);

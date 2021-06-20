@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import Header from "./header/Header";
 import Routes from "../routes";
 
-import { AuthProvider } from "../services/authProvider";
+import { AuthProvider } from "../services/sessionProvider";
 
 import "./App.css";
 

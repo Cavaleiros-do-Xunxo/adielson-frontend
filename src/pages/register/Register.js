@@ -5,7 +5,7 @@ import { Block, Container, Columns } from "react-bulma-components";
 
 import api from "../../services/api";
 import SessionManager from "../../services/sessionManager";
-import { AuthContext } from "../../services/authProvider";
+import { SessionContext } from "../../services/sessionProvider";
 
 import "./Register.css";
 import SuccessOverlay from "../../components/success-overlay/SuccessOverlay";
@@ -22,7 +22,7 @@ const Register = (props) => {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [error, setError] = useState("");
   const { isAuthenticated, setIsAuthenticated, setIsAdmin } =
-    useContext(AuthContext);
+    useContext(SessionContext);
 
   useEffect(() => {
     if (isAuthenticated) {

@@ -1,9 +1,28 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Card, Media, Content, Heading, Button } from "react-bulma-components";
+
+import Cart from "../../services/cart";
+import { SessionContext } from "../../services/sessionProvider";
 
 import "./CardMenu.css";
 
 const CardMenu = (props) => {
+  const [isItemAdded, setIsItemAdded] = useState(false);
+  const { setCartItems } = useContext(SessionContext);
+
+  const addItemToCart = (menuItem) => {
+    if (menuItem) {
+      Cart.addItem(props.menuItem, (items) => {
+        setCartItems(items);
+      });
+      setIsItemAdded(true);
+
+      setTimeout(() => {
+        setIsItemAdded(false);
+      }, 1000);
+    }
+  };
+
   const formatPrice = (price) => {
     return price.toPrecision(price.toString().length + 2).replace(".", ",");
   };
@@ -47,8 +66,17 @@ const CardMenu = (props) => {
             justifyContent: "end",
           }}
         >
-          <Button className="button is-danger is-rounded">
-            <i className="fas fa-plus add-item-to-char-icon"></i> Adicionar
+          <Button
+            className="button is-danger is-rounded"
+            disabled={isItemAdded}
+            onClick={() => {
+              if (props.menuItem) {
+                addItemToCart(props.menuItem);
+              }
+            }}
+          >
+            <i className="fas fa-plus add-item-to-char-icon"></i>{" "}
+            {isItemAdded ? "Adicionado" : "Adicionar"}
           </Button>
         </Content>
       </Card.Content>

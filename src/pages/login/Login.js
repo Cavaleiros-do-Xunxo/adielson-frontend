@@ -7,7 +7,7 @@ import SuccessOverlay from "../../components/success-overlay/SuccessOverlay";
 
 import api from "../../services/api";
 import SessionManager from "../../services/sessionManager";
-import { AuthContext } from "../../services/authProvider";
+import { SessionContext } from "../../services/sessionProvider";
 
 import "./Login.css";
 
@@ -17,7 +17,7 @@ const Login = (props) => {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [errorOccurred, setErrorOccurred] = useState(false);
   const { isAuthenticated, setIsAuthenticated, setIsAdmin } =
-    useContext(AuthContext);
+    useContext(SessionContext);
 
   useEffect(() => {
     let isMounted = true;

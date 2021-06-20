@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Block, Navbar, Button } from "react-bulma-components";
 import Cart from "../cart/Cart";
 
-import { AuthContext } from "../../services/authProvider";
+import { SessionContext } from "../../services/sessionProvider";
 import SessionManager from "../../services/sessionManager";
 import api from "../../services/api";
 
@@ -12,7 +12,7 @@ const Header = (props) => {
   const [showCart, setShowCart] = useState(false);
   const headerHeight = useRef(null);
   const { isAuthenticated, setIsAuthenticated, setIsAdmin } =
-    useContext(AuthContext);
+    useContext(SessionContext);
 
   useEffect(() => {
     props.updateHeaderHeight(headerHeight.current.clientHeight);
