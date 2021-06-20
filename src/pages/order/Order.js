@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import { motion } from "framer-motion";
 import {
   Block,
@@ -21,6 +21,9 @@ import AddressForm from "../../components/address-form/AddressForm";
 import PaymentForm from "../../components/payment-form/PaymentForm";
 import SuccessOverlay from "../../components/success-overlay/SuccessOverlay";
 
+import { SessionContext } from "../../services/sessionProvider";
+import CartManager from "../../services/cart";
+
 const config = {
   steps: {
     CONFIRM_ITEMS: {
@@ -32,84 +35,83 @@ const config = {
       title: "Método de pagamento e forma de envio",
     },
   },
-};
-
-const deliveryMethods = {
-  DELIVERY: "DELIVERY",
-  WITHDRAW_IN_PLACE: "WITHDRAW_IN_PLACE",
-};
-
-const paymentMethods = {
-  IN_APP: "IN_APP",
-  ON_DELIVERY: "ON_DELIVERY",
-};
-
-const requiredLocationProps = [
-  {
-    propName: "address",
-    fieldName: "Endereço",
+  deliveryMethods: {
+    DELIVERY: "DELIVERY",
+    WITHDRAW_IN_PLACE: "WITHDRAW_IN_PLACE",
   },
-  {
-    propName: "number",
-    fieldName: "Número do endereço",
+  paymentMethods: {
+    IN_APP: "IN_APP",
+    ON_DELIVERY: "ON_DELIVERY",
   },
-];
-
-const requiredPaymentProps = [
-  {
-    propName: "cvc",
-    fieldName: "CVC",
-  },
-  {
-    propName: "number",
-    fieldName: "Número do cartão",
-  },
-  {
-    propName: "expiry",
-    fieldName: "Data de expiração do cartão",
-  },
-  {
-    propName: "name",
-    fieldName: "Nome no cartão",
-  },
-];
-
-export default class Order extends React.Component {
-  state = {
-    initialOpacity: 0,
-    endOpacity: 1,
-    currentStep: config.steps.CONFIRM_ITEMS,
-    deliveryMethod: deliveryMethods.DELIVERY,
-    paymentMethod: paymentMethods.IN_APP,
-    location: {
-      address: "",
-      number: "",
-      complement: "",
+  requiredLocationProps: [
+    {
+      propName: "address",
+      fieldName: "Endereço",
     },
-    focused: "",
-    payment: {
-      cvc: "",
-      expiry: "",
-      name: "",
-      number: "",
+    {
+      propName: "number",
+      fieldName: "Número do endereço",
     },
-    formIssues: [],
-    showSuccessOverlay: false,
-  };
+  ],
+  requiredPaymentProps: [
+    {
+      propName: "cvc",
+      fieldName: "CVC",
+    },
+    {
+      propName: "number",
+      fieldName: "Número do cartão",
+    },
+    {
+      propName: "expiry",
+      fieldName: "Data de expiração do cartão",
+    },
+    {
+      propName: "name",
+      fieldName: "Nome no cartão",
+    },
+  ],
+};
 
-  updateCurrentStep = (step) => {
-    this.setState({ initialOpacity: 1, endOpacity: 0 });
+const Order = (props) => {
+  const [opacity, setOpacity] = useState({ initial: 0, end: 1 });
+  const [currentStep, setCurrentStep] = useState(config.steps.CONFIRM_ITEMS);
+  const [deliveryMethod, setDeliveryMethod] = useState(
+    config.deliveryMethods.DELIVERY
+  );
+  const [paymentMethod, setPaymentMethod] = useState(
+    config.paymentMethods.IN_APP
+  );
+  const [location, setLocation] = useState({
+    address: "",
+    number: "",
+    complement: "",
+  });
+  const [focused, setFocused] = useState("");
+  const [payment, setPayment] = useState({
+    cvc: "",
+    expiry: "",
+    name: "",
+    number: "",
+  });
+  const [formIssues, setFormIssues] = useState([]);
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+  const { cartItems, setCartItems } = useContext(SessionContext);
+
+  const updateCurrentStep = (step) => {
+    setOpacity({ initial: 1, end: 0 });
 
     setTimeout(() => {
-      this.setState({ initialOpacity: 0, endOpacity: 1, currentStep: step });
+      setOpacity({ initial: 0, end: 1 });
+      setCurrentStep(step);
     }, 200);
   };
 
-  handleInputFocus = (e) => {
-    this.setState({ focused: e.target.name });
+  const handleInputFocus = (e) => {
+    setFocused({ focused: e.target.name });
   };
 
-  handlePaymentInputChange = ({ target }) => {
+  const handlePaymentInputChange = ({ target }) => {
     if (target.name === "number") {
       target.value = formatCreditCardNumber(target.value);
     } else if (target.name === "expiry") {
@@ -118,42 +120,40 @@ export default class Order extends React.Component {
       target.value = formatCVC(target.value);
     }
 
-    this.setState({
-      payment: { ...this.state.payment, [target.name]: target.value },
-    });
+    setPayment({ ...payment, [target.name]: target.value });
   };
 
-  handleAddressInputChange = (e) => {
+  const handleAddressInputChange = (e) => {
     const { name, value } = e.target;
 
-    this.setState({ location: { ...this.state.location, [name]: value } });
+    setLocation({ ...location, [name]: value });
   };
 
-  getDeliveryForm = () => {
-    if (this.state.deliveryMethod === deliveryMethods.DELIVERY) {
+  const getDeliveryForm = () => {
+    if (deliveryMethod === config.deliveryMethods.DELIVERY) {
       return (
         <Block>
-          <AddressForm handleInputChange={this.handleAddressInputChange} />
+          <AddressForm handleInputChange={handleAddressInputChange} />
           <hr />
         </Block>
       );
     }
   };
 
-  validateForm = () => {
+  const validateForm = () => {
     const _formIssues = [];
 
-    if (this.state.deliveryMethod === deliveryMethods.DELIVERY) {
-      for (const field of requiredLocationProps) {
-        if (!this.state.location[field.propName]) {
+    if (deliveryMethod === config.deliveryMethods.DELIVERY) {
+      for (const field of config.requiredLocationProps) {
+        if (!location[field.propName]) {
           _formIssues.push(field);
         }
       }
     }
 
-    if (this.state.paymentMethod === paymentMethods.IN_APP) {
-      for (const field of requiredPaymentProps) {
-        if (!this.state.payment[field.propName]) {
+    if (paymentMethod === config.paymentMethods.IN_APP) {
+      for (const field of config.requiredPaymentProps) {
+        if (!payment[field.propName]) {
           _formIssues.push(field);
         }
       }
@@ -162,27 +162,27 @@ export default class Order extends React.Component {
     return _formIssues;
   };
 
-  submitForm = () => {
-    const issues = this.validateForm();
+  const submitForm = () => {
+    const issues = validateForm();
 
     if (issues.length > 0) {
-      this.setState({ formIssues: issues });
+      setFormIssues(issues);
       return;
     }
 
     // @TODO: Submit order...
-    this.setState({ showSuccessOverlay: true });
+    setShowSuccessOverlay(true);
 
     setTimeout(() => {
-      this.props.history.push("/myorders");
+      props.history.push("/myorders");
     }, 2000);
   };
 
-  buildFormIssuesList = () => {
+  const buildFormIssuesList = () => {
     const fieldsToRender = [];
     let i = 0;
 
-    for (const field of this.state.formIssues) {
+    for (const field of formIssues) {
       fieldsToRender.push(<li key={i}>{field.fieldName}</li>);
       i++;
     }
@@ -190,8 +190,8 @@ export default class Order extends React.Component {
     return fieldsToRender;
   };
 
-  getRequiredFieldsAlert = () => {
-    if (this.state.formIssues.length <= 0) {
+  const getRequiredFieldsAlert = () => {
+    if (formIssues.length <= 0) {
       return;
     }
 
@@ -202,24 +202,24 @@ export default class Order extends React.Component {
       <Notification color="danger">
         <p>{message}</p>
         <Content>
-          <ul>{this.buildFormIssuesList()}</ul>
+          <ul>{buildFormIssuesList()}</ul>
         </Content>
       </Notification>
     );
   };
 
-  getPaymentForm = () => {
-    if (this.state.paymentMethod === paymentMethods.IN_APP) {
+  const getPaymentForm = () => {
+    if (paymentMethod === config.paymentMethods.IN_APP) {
       return (
         <Block>
           <PaymentForm
-            cvc={this.state.payment.cvc}
-            expiry={this.state.payment.expiry}
-            name={this.state.payment.name}
-            number={this.state.payment.number}
-            focused={this.state.focused}
-            handlePaymentInputChange={this.handlePaymentInputChange}
-            handleInputFocus={this.handleInputFocus}
+            cvc={payment.cvc}
+            expiry={payment.expiry}
+            name={payment.name}
+            number={payment.number}
+            focused={focused}
+            handlePaymentInputChange={handlePaymentInputChange}
+            handleInputFocus={handleInputFocus}
           />
           <hr />
         </Block>
@@ -227,162 +227,179 @@ export default class Order extends React.Component {
     }
   };
 
-  getSuccessOverlay = () => {
-    if (this.state.showSuccessOverlay) {
+  const getSuccessOverlay = () => {
+    if (showSuccessOverlay) {
       return <SuccessOverlay text="Pedido realizado com sucesso!" />;
     }
   };
 
-  render() {
-    let content = null;
+  const buildCartList = () => {
+    const items = [];
 
-    if (this.state.currentStep.id === config.steps.CONFIRM_ITEMS.id) {
-      content = (
-        <Block>
-          <ListItem useBoxWrap={true} />
-          <ListItem useBoxWrap={true} />
-          <ListItem useBoxWrap={true} />
-          <hr />
-          <Block display="flex" justifyContent="center">
-            <Button
-              color="success"
-              onClick={() => {
-                this.updateCurrentStep(config.steps.PAYMENT_AND_DELIVERY);
-              }}
-            >
-              <i className="fas fa-check"></i>
-              <span style={{ marginLeft: "5px" }}>Confirmar</span>
-            </Button>
-          </Block>
-        </Block>
+    for (const item of cartItems) {
+      items.push(
+        <ListItem
+          key={item.id}
+          {...item}
+          addItem={addItemToCart}
+          removeItem={removeItemFromCart}
+          useBoxWrap={true}
+        />
       );
     }
 
-    if (this.state.currentStep.id === config.steps.PAYMENT_AND_DELIVERY.id) {
-      content = (
-        <Block>
-          <Form.Field>
-            <Form.Label>Forma de entrega</Form.Label>
-            <Form.Control>
-              <Form.Radio
-                value={deliveryMethods.DELIVERY}
-                name="deliveryMethod"
-                checked={this.state.deliveryMethod === deliveryMethods.DELIVERY}
-                onChange={(e) => {
-                  return this.setState({
-                    deliveryMethod: e.target.value,
-                  });
-                }}
-              >
-                Entrega
-              </Form.Radio>
-              <Form.Radio
-                value={deliveryMethods.WITHDRAW_IN_PLACE}
-                name="deliveryMethod"
-                checked={
-                  this.state.deliveryMethod ===
-                  deliveryMethods.WITHDRAW_IN_PLACE
-                }
-                onChange={(e) => {
-                  this.setState({
-                    deliveryMethod: e.target.value,
-                  });
-                }}
-              >
-                Retirada no balcão
-              </Form.Radio>
-            </Form.Control>
-          </Form.Field>
-          <hr />
-          {this.getDeliveryForm()}
-          <Form.Field>
-            <Form.Label>Forma de pagamento</Form.Label>
-            <Form.Control>
-              <Form.Radio
-                value={paymentMethods.IN_APP}
-                name="paymentMethod"
-                checked={this.state.paymentMethod === paymentMethods.IN_APP}
-                onChange={(e) => {
-                  this.setState({
-                    paymentMethod: e.target.value,
-                  });
-                }}
-              >
-                Pagamento no site pelo cartão de crédito
-              </Form.Radio>
-              <Form.Radio
-                value={paymentMethods.ON_DELIVERY}
-                name="paymentMethod"
-                checked={
-                  this.state.paymentMethod === paymentMethods.ON_DELIVERY
-                }
-                onChange={(e) => {
-                  return this.setState({
-                    paymentMethod: e.target.value,
-                  });
-                }}
-              >
-                Pagamento na hora
-              </Form.Radio>
-            </Form.Control>
-          </Form.Field>
-          <hr />
-          {this.getPaymentForm()}
-          <Block display="flex" justifyContent="center">
-            {this.getRequiredFieldsAlert()}
-          </Block>
-          <Block
-            display="flex"
-            justifyContent="center"
-            style={{ marginBottom: "10px" }}
+    return items;
+  };
+
+  const addItemToCart = (menuItem) => {
+    CartManager.addItem(menuItem, (items) => {
+      setCartItems(items);
+    });
+  };
+
+  const removeItemFromCart = (id) => {
+    CartManager.removeItem(id, (items) => {
+      setCartItems(items);
+    });
+  };
+
+  let content = null;
+
+  if (currentStep.id === config.steps.CONFIRM_ITEMS.id) {
+    content = (
+      <Block>
+        {buildCartList()}
+        <hr />
+        <Block display="flex" justifyContent="center">
+          <Button
+            color="success"
+            onClick={() => {
+              updateCurrentStep(config.steps.PAYMENT_AND_DELIVERY);
+            }}
           >
-            <Button
-              color="danger"
-              onClick={() => {
-                this.updateCurrentStep(config.steps.CONFIRM_ITEMS);
-              }}
-            >
-              <i className="fas fa-chevron-left"></i>
-              <span style={{ marginLeft: "5px" }}>Rever itens do pedido</span>
-            </Button>
-            <Button
-              color="success"
-              style={{ marginLeft: "5px" }}
-              onClick={() => {
-                this.submitForm();
-              }}
-            >
-              <i className="fas fa-check"></i>
-              <span style={{ marginLeft: "5px" }}>Realizar pedido</span>
-            </Button>
-          </Block>
+            <i className="fas fa-check"></i>
+            <span style={{ marginLeft: "5px" }}>Confirmar</span>
+          </Button>
         </Block>
-      );
-    }
-
-    return (
-      <Container
-        renderAs={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <Block
-          renderAs={motion.div}
-          initial={{ opacity: this.state.initialOpacity }}
-          animate={{
-            opacity: this.state.endOpacity,
-          }}
-          style={{ margin: "5px" }}
-        >
-          <Heading size={3} style={{ marginTop: "10px" }}>
-            {config.steps[this.state.currentStep.id].title}
-          </Heading>
-          <hr />
-          {content}
-        </Block>
-        {this.getSuccessOverlay()}
-      </Container>
+      </Block>
     );
   }
-}
+
+  if (currentStep.id === config.steps.PAYMENT_AND_DELIVERY.id) {
+    content = (
+      <Block>
+        <Form.Field>
+          <Form.Label>Forma de entrega</Form.Label>
+          <Form.Control>
+            <Form.Radio
+              value={config.deliveryMethods.DELIVERY}
+              name="deliveryMethod"
+              checked={deliveryMethod === config.deliveryMethods.DELIVERY}
+              onChange={(e) => {
+                setDeliveryMethod(e.target.value);
+              }}
+            >
+              Entrega
+            </Form.Radio>
+            <Form.Radio
+              value={config.deliveryMethods.WITHDRAW_IN_PLACE}
+              name="deliveryMethod"
+              checked={
+                deliveryMethod === config.deliveryMethods.WITHDRAW_IN_PLACE
+              }
+              onChange={(e) => {
+                setDeliveryMethod(e.target.value);
+              }}
+            >
+              Retirada no balcão
+            </Form.Radio>
+          </Form.Control>
+        </Form.Field>
+        <hr />
+        {getDeliveryForm()}
+        <Form.Field>
+          <Form.Label>Forma de pagamento</Form.Label>
+          <Form.Control>
+            <Form.Radio
+              value={config.paymentMethods.IN_APP}
+              name="paymentMethod"
+              checked={paymentMethod === config.paymentMethods.IN_APP}
+              onChange={(e) => {
+                setPaymentMethod(e.target.value);
+              }}
+            >
+              Pagamento no site pelo cartão de crédito
+            </Form.Radio>
+            <Form.Radio
+              value={config.paymentMethods.ON_DELIVERY}
+              name="paymentMethod"
+              checked={paymentMethod === config.paymentMethods.ON_DELIVERY}
+              onChange={(e) => {
+                setPaymentMethod(e.target.value);
+              }}
+            >
+              Pagamento na hora
+            </Form.Radio>
+          </Form.Control>
+        </Form.Field>
+        <hr />
+        {getPaymentForm()}
+        <Block display="flex" justifyContent="center">
+          {getRequiredFieldsAlert()}
+        </Block>
+        <Block
+          display="flex"
+          justifyContent="center"
+          style={{ marginBottom: "10px" }}
+        >
+          <Button
+            color="danger"
+            onClick={() => {
+              updateCurrentStep(config.steps.CONFIRM_ITEMS);
+            }}
+          >
+            <i className="fas fa-chevron-left"></i>
+            <span style={{ marginLeft: "5px" }}>Rever itens do pedido</span>
+          </Button>
+          <Button
+            color="success"
+            style={{ marginLeft: "5px" }}
+            onClick={() => {
+              submitForm();
+            }}
+          >
+            <i className="fas fa-check"></i>
+            <span style={{ marginLeft: "5px" }}>Realizar pedido</span>
+          </Button>
+        </Block>
+      </Block>
+    );
+  }
+
+  return (
+    <Container
+      renderAs={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <Block
+        renderAs={motion.div}
+        initial={{ opacity: opacity.initial }}
+        animate={{
+          opacity: opacity.end,
+        }}
+        style={{ margin: "5px" }}
+      >
+        <Heading size={3} style={{ marginTop: "10px" }}>
+          {config.steps[currentStep.id].title}
+        </Heading>
+        <hr />
+        {content}
+      </Block>
+      {getSuccessOverlay()}
+    </Container>
+  );
+};
+
+export default Order;
