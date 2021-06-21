@@ -12,6 +12,7 @@ import {
 import uuid from "react-uuid";
 import api from "../../services/api";
 import Spinner from "../../components/spinner/Spinner";
+import moment from "moment";
 
 const config = {
   status: {
@@ -21,35 +22,6 @@ const config = {
     FINISHED: "Pedido finalizado",
   },
 };
-
-// Mock for status
-// setTimeout(() => {
-//   setOrder({
-//     allStatus: [
-//       {
-//         value: "Pedido confirmado",
-//         date: moment("2021-06-01 21:00:00"),
-//       },
-//       {
-//         value: "Pedido sendo feito",
-//         date: moment("2021-06-01 21:05:00"),
-//       },
-//       {
-//         value: "Pedido saiu para entrega",
-//         date: moment("2021-06-01 21:10:00"),
-//       },
-//     ],
-//     items: [
-//       {
-//         title: "Marmita",
-//         description: "Arroz, feijão e frango assado",
-//         price: 10.0,
-//         quantity: 1,
-//       },
-//     ],
-//     total: 10.0,
-//   });
-// }, 1000);
 
 const MyOrder = (props) => {
   const [order, setOrder] = useState({ allStatus: [], items: [], total: 0.0 });
@@ -87,27 +59,9 @@ const MyOrder = (props) => {
     };
   }, [id]);
 
-  // const getStatus = () => {
-  //   const statusBlock = [];
-
-  //   for (const status of order.allStatus) {
-  //     statusBlock.push(
-  //       <Block
-  //         key={status.value}
-  //         style={{ display: "flex", alignItems: "center" }}
-  //       >
-  //         <i
-  //           className="fas fa-check-circle fa-2x"
-  //           style={{ marginRight: "10px", color: "#48c774" }}
-  //         />
-  //         {status.date.format("HH:mm")} -
-  //         <strong style={{ marginLeft: "5px" }}>{status.value}</strong>
-  //       </Block>
-  //     );
-  //   }
-
-  //   return statusBlock;
-  // };
+  const formatDate = (timestamp) => {
+    return moment(timestamp).format("DD/MM/YYYY");
+  };
 
   const getItems = () => {
     const items = [];
@@ -136,7 +90,7 @@ const MyOrder = (props) => {
       exit={{ opacity: 0 }}
     >
       <Box>
-        <Heading>Pedido do dia 01/06/2021</Heading>
+        <Heading>Pedido do dia {formatDate(order.orderTime)}</Heading>
       </Box>
       <Box>
         <Heading subtitle size={4}>
