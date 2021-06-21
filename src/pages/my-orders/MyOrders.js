@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Box, Container, Heading } from "react-bulma-components";
+import { Block, Box, Container, Heading } from "react-bulma-components";
 import ListOrderItem from "../../components/list-order-item/ListOrderItem";
+import Spinner from "../../components/spinner/Spinner";
 import moment from "moment";
 
 import "./MyOrder.css";
@@ -68,7 +69,13 @@ const MyOrders = (props) => {
       <Box>
         <Heading>Meus pedidos</Heading>
       </Box>
-      {buildList()}
+      {orders.length > 0 ? (
+        buildList()
+      ) : (
+        <Block style={{ display: "flex", justifyContent: "center" }}>
+          <Spinner />
+        </Block>
+      )}
     </Container>
   );
 };

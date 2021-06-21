@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import { Box, Container, Content, Heading } from "react-bulma-components";
+import {
+  Block,
+  Box,
+  Container,
+  Content,
+  Heading,
+} from "react-bulma-components";
 // import moment from "moment";
 import uuid from "react-uuid";
 import api from "../../services/api";
+import Spinner from "../../components/spinner/Spinner";
+
+const config = {
+  status: {
+    WAITING: "Aguardando confirmação do pedido",
+    PREPARING: "Em preparo",
+    SENT: "Pedido enviado",
+    FINISHED: "Pedido finalizado",
+  },
+};
 
 // Mock for status
 // setTimeout(() => {
@@ -83,14 +99,14 @@ const MyOrder = (props) => {
   const getItems = () => {
     const items = [];
 
-    for (const item of order.items) {
+    for (const item of order.orderItems) {
       items.push(
         <ul key={uuid()}>
           <li>
             <strong>
-              {item.quantity} {item.title}
+              {item.count} {item.menuItem.name}
             </strong>{" "}
-            - {item.description}
+            - {item.menuItem.description}
           </li>
         </ul>
       );
@@ -111,13 +127,19 @@ const MyOrder = (props) => {
       </Box>
       <Box>
         <Heading subtitle size={4}>
-          Status do pedido:
+          Status do pedido: <strong>{config.status[order.status]}</strong>
         </Heading>
         <hr />
         <Heading subtitle size={4}>
           Items do pedido
         </Heading>
-        {getItems()}
+        {order && order.orderItems ? (
+          getItems()
+        ) : (
+          <Block style={{ display: "flex", justifyContent: "center" }}>
+            <Spinner />
+          </Block>
+        )}
         <hr />
         <Heading subtitle size={4}>
           Valor total do pedido:{" "}
