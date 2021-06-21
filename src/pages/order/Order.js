@@ -23,6 +23,7 @@ import SuccessOverlay from "../../components/success-overlay/SuccessOverlay";
 
 import { SessionContext } from "../../services/sessionProvider";
 import CartManager from "../../services/cart";
+import api from "../../services/api";
 
 const config = {
   steps: {
@@ -108,7 +109,7 @@ const Order = (props) => {
   };
 
   const handleInputFocus = (e) => {
-    setFocused({ focused: e.target.name });
+    setFocused(e.target.name);
   };
 
   const handlePaymentInputChange = ({ target }) => {
@@ -162,7 +163,7 @@ const Order = (props) => {
     return _formIssues;
   };
 
-  const submitForm = () => {
+  const submitForm = async () => {
     const issues = validateForm();
 
     if (issues.length > 0) {
@@ -170,8 +171,26 @@ const Order = (props) => {
       return;
     }
 
-    // @TODO: Submit order...
+    const items = cartItems.map((_item, _) => {
+      return {
+        item: _item.id,
+        count: _item.count,
+      };
+    });
+
+    await api.createOrder({
+      delivery: deliveryMethod,
+      items: items,
+      orderAddress: [
+        {
+          address: location.address,
+          address2: location.complement,
+          zipCode: location.number,
+        },
+      ],
+    });
     setShowSuccessOverlay(true);
+    setCartItems([]);
 
     setTimeout(() => {
       props.history.push("/myorders");

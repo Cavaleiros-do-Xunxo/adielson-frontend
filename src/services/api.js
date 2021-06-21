@@ -53,6 +53,15 @@ const api = {
   updateMenuItem: (id, data) => {
     return _http.put(`/items/${id}`, data, { headers: _getAuthHeader() });
   },
+  createOrder: (data) => {
+    return _http.post(`/orders`, data, { headers: _getAuthHeader() });
+  },
+  getMyOrders: () => {
+    return _http.get(`/orders`, { headers: _getAuthHeader() });
+  },
+  getOrder: (id) => {
+    return _http.get(`/orders/${id}`, { headers: _getAuthHeader() });
+  },
 };
 
 export default api;

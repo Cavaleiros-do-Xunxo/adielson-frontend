@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Box, Container, Heading } from "react-bulma-components";
 import ListOrderItem from "../../components/list-order-item/ListOrderItem";
+import moment from "moment";
 
 import "./MyOrder.css";
 import { Link } from "react-router-dom";
+import api from "../../services/api";
 
 const MyOrders = (props) => {
   const [orders, setOrders] = useState([]);
@@ -12,10 +14,11 @@ const MyOrders = (props) => {
   const buildList = () => {
     const _orders = [];
 
-    for (const order in orders) {
+    for (const order of orders) {
+      console.log(order.id);
       _orders.push(
         <Link key={order.id} to={`/myorder/${order.id}`}>
-          <ListOrderItem className="list-order-item" />
+          <ListOrderItem {...order} className="list-order-item" />
         </Link>
       );
     }
@@ -23,16 +26,36 @@ const MyOrders = (props) => {
     return _orders;
   };
 
+  const fetchOrders = async () => {
+    try {
+      const response = await api.getMyOrders();
+
+      const _orders = response.data.map((order, _) => {
+        return {
+          id: order.id,
+          date: moment(order.orderTime).format("DD/MM/YYYY"),
+          status: order.status,
+          total: order.total,
+          items: order.orderItems,
+        };
+      });
+
+      setOrders(_orders);
+    } catch (e) {
+      console.error("Failed to fetch orders");
+    }
+  };
+
   useEffect(() => {
-    setOrders([
-      {
-        id: 1,
-        date: "2021-06-01",
-        status: "",
-        items: [{ title: "Marmita", description: "ARROZ, FEIJÃO E BATATA" }],
-        total: 100.0,
-      },
-    ]);
+    let isMounted = true;
+
+    if (isMounted) {
+      fetchOrders();
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

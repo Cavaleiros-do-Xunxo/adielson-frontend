@@ -69,7 +69,6 @@ const Cart = (props) => {
           <Link
             className="button is-success"
             to="/order"
-            disabled={cartItems.length > 0}
             onClick={() => {
               props.showCb(false);
             }}

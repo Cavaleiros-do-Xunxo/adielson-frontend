@@ -41,6 +41,16 @@ const Header = (props) => {
     window.location.pathname = "/";
   };
 
+  const renderMyOrders = () => {
+    if (isAuthenticated) {
+      return (
+        <Navbar.Item renderAs={Link} to="/myorders">
+          Meus pedidos
+        </Navbar.Item>
+      );
+    }
+  };
+
   const renderLoginAndRegister = () => {
     if (!isAuthenticated) {
       return (
@@ -95,6 +105,7 @@ const Header = (props) => {
           <Navbar.Item renderAs={Link} to="/menu">
             Cardápio
           </Navbar.Item>
+          {renderMyOrders()}
         </Navbar.Container>
         <Navbar.Container align="end">
           <Navbar.Item href="#" renderAs="div">

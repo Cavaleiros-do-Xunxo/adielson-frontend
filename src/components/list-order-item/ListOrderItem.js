@@ -1,27 +1,54 @@
 import React from "react";
 import { Block, Box, Content, Heading, Media } from "react-bulma-components";
 
+const config = {
+  status: {
+    WAITING: "Aguardando confirmação do pedido",
+    PREPARING: "Em preparo",
+    SENT: "Pedido enviado",
+    FINISHED: "Pedido finalizado",
+  },
+};
+
 const ListOrderItem = (props) => {
+  const renderItemsList = () => {
+    const items = [];
+
+    for (const item of props.items) {
+      items.push(
+        <Block key={item.menuItem.id}>
+          <p>
+            <strong>
+              {item.count} {item.menuItem.name}:{" "}
+            </strong>{" "}
+            {item.menuItem.description}
+          </p>
+        </Block>
+      );
+    }
+
+    return items;
+  };
+
   return (
     <Box className={props.className}>
       <Media>
         <Media.Item>
           <Content>
             <Block>
-              <Heading size={5}>Pedido do dia 01/06/2021</Heading>
+              <Heading size={5}>Pedido do dia {props.date}</Heading>
               <Heading
                 subtitle
                 size={6}
                 weight="normal"
                 style={{ color: "#48c774" }}
               >
-                Pedido entregue
+                {config.status[props.status]}
               </Heading>
-              <p>
-                <strong>1 Marmita: </strong> Arroz, feijão, macarrão e frango
-                assado.
+              {renderItemsList()}
+              <p style={{ color: "#48c774" }}>
+                <strong>Total: </strong>R$ {props.total}
               </p>
-              <p style={{ color: "#48c774" }}>R$ 100,00</p>
             </Block>
           </Content>
         </Media.Item>

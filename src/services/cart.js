@@ -61,6 +61,11 @@ class Cart {
       cb(this._items);
     }
   }
+
+  clear() {
+    this._items = [];
+    localStorage.setItem(config.key, JSON.stringify([]));
+  }
 }
 
 const cart = new Cart();

@@ -1,71 +1,84 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
-import {
-  Block,
-  Box,
-  Container,
-  Content,
-  Heading,
-} from "react-bulma-components";
-import moment from "moment";
+import { Box, Container, Content, Heading } from "react-bulma-components";
+// import moment from "moment";
 import uuid from "react-uuid";
+import api from "../../services/api";
+
+// Mock for status
+// setTimeout(() => {
+//   setOrder({
+//     allStatus: [
+//       {
+//         value: "Pedido confirmado",
+//         date: moment("2021-06-01 21:00:00"),
+//       },
+//       {
+//         value: "Pedido sendo feito",
+//         date: moment("2021-06-01 21:05:00"),
+//       },
+//       {
+//         value: "Pedido saiu para entrega",
+//         date: moment("2021-06-01 21:10:00"),
+//       },
+//     ],
+//     items: [
+//       {
+//         title: "Marmita",
+//         description: "Arroz, feijão e frango assado",
+//         price: 10.0,
+//         quantity: 1,
+//       },
+//     ],
+//     total: 10.0,
+//   });
+// }, 1000);
 
 const MyOrder = (props) => {
   const [order, setOrder] = useState({ allStatus: [], items: [], total: 0.0 });
   const { id } = useParams();
 
   useEffect(() => {
-    setTimeout(() => {
-      setOrder({
-        allStatus: [
-          {
-            value: "Pedido confirmado",
-            date: moment("2021-06-01 21:00:00"),
-          },
-          {
-            value: "Pedido sendo feito",
-            date: moment("2021-06-01 21:05:00"),
-          },
-          {
-            value: "Pedido saiu para entrega",
-            date: moment("2021-06-01 21:10:00"),
-          },
-        ],
-        items: [
-          {
-            title: "Marmita",
-            description: "Arroz, feijão e frango assado",
-            price: 10.0,
-            quantity: 1,
-          },
-        ],
-        total: 10.0,
-      });
-    }, 1000);
-  }, []);
+    let isMounted = true;
 
-  const getStatus = () => {
-    const statusBlock = [];
-
-    for (const status of order.allStatus) {
-      statusBlock.push(
-        <Block
-          key={status.value}
-          style={{ display: "flex", alignItems: "center" }}
-        >
-          <i
-            className="fas fa-check-circle fa-2x"
-            style={{ marginRight: "10px", color: "#48c774" }}
-          />
-          {status.date.format("HH:mm")} -
-          <strong style={{ marginLeft: "5px" }}>{status.value}</strong>
-        </Block>
-      );
+    if (isMounted) {
+      (async () => {
+        try {
+          const response = await api.getOrder(id);
+          setOrder(response.data);
+        } catch (e) {
+          console.error("Failed to fetch order");
+        }
+      })();
     }
 
-    return statusBlock;
-  };
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  // const getStatus = () => {
+  //   const statusBlock = [];
+
+  //   for (const status of order.allStatus) {
+  //     statusBlock.push(
+  //       <Block
+  //         key={status.value}
+  //         style={{ display: "flex", alignItems: "center" }}
+  //       >
+  //         <i
+  //           className="fas fa-check-circle fa-2x"
+  //           style={{ marginRight: "10px", color: "#48c774" }}
+  //         />
+  //         {status.date.format("HH:mm")} -
+  //         <strong style={{ marginLeft: "5px" }}>{status.value}</strong>
+  //       </Block>
+  //     );
+  //   }
+
+  //   return statusBlock;
+  // };
 
   const getItems = () => {
     const items = [];
@@ -98,9 +111,8 @@ const MyOrder = (props) => {
       </Box>
       <Box>
         <Heading subtitle size={4}>
-          Status do pedido
+          Status do pedido:
         </Heading>
-        {getStatus()}
         <hr />
         <Heading subtitle size={4}>
           Items do pedido
