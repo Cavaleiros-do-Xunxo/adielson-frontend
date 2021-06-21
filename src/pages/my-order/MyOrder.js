@@ -67,6 +67,19 @@ const MyOrder = (props) => {
           console.error("Failed to fetch order");
         }
       })();
+
+      const interval = setInterval(async () => {
+        try {
+          const response = await api.getOrder(id);
+          setOrder(response.data);
+        } catch (e) {
+          console.error("Failed to fetch order");
+        }
+      }, 5000);
+
+      return () => {
+        clearInterval(interval);
+      };
     }
 
     return () => {
