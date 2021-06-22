@@ -24,40 +24,46 @@ const config = {
 };
 
 const MyOrder = (props) => {
-  const [order, setOrder] = useState({ allStatus: [], items: [], total: 0.0 });
+  const [order, setOrder] = useState(null);
+  const [orderItems, setOrderItems] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
     let isMounted = true;
 
-    if (isMounted) {
-      (async () => {
-        try {
-          const response = await api.getOrder(id);
-          setOrder(response.data);
-        } catch (e) {
-          console.error("Failed to fetch order");
-        }
-      })();
+    (async () => {
+      try {
+        const [orderResp, orderItemsResp] = await Promise.all([
+          api.getOrder(id),
+          api.getOrderItems(id),
+        ]);
 
-      const interval = setInterval(async () => {
-        try {
-          const response = await api.getOrder(id);
-          setOrder(response.data);
-        } catch (e) {
-          console.error("Failed to fetch order");
+        if (isMounted) {
+          setOrder(orderResp.data);
+          setOrderItems(orderItemsResp.data);
         }
-      }, 5000);
+      } catch (e) {
+        console.error("Failed to fetch order");
+      }
+    })();
 
-      return () => {
-        clearInterval(interval);
-      };
-    }
+    const interval = setInterval(async () => {
+      try {
+        const response = await api.getOrder(id);
+
+        if (isMounted) {
+          setOrder(response.data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch order");
+      }
+    }, 5000);
 
     return () => {
+      clearInterval(interval);
       isMounted = false;
     };
-  }, [id]);
+  }, [id, setOrder, setOrderItems]);
 
   const formatDate = (timestamp) => {
     return moment(timestamp).format("DD/MM/YYYY");
@@ -66,20 +72,63 @@ const MyOrder = (props) => {
   const getItems = () => {
     const items = [];
 
-    for (const item of order.orderItems) {
+    for (const item of orderItems) {
       items.push(
         <ul key={uuid()}>
           <li>
             <strong>
-              {item.count} {item.menuItem.name}
+              {item.count} {item.item.name}
             </strong>{" "}
-            - {item.menuItem.description}
+            - {item.item.description}
           </li>
         </ul>
       );
     }
 
     return <Content>{items}</Content>;
+  };
+
+  const renderOrder = () => {
+    if (order) {
+      return (
+        <Block>
+          <Box>
+            <Heading>Pedido do dia {formatDate(order.orderTime)}</Heading>
+          </Box>
+          <Box>
+            <Heading subtitle size={4}>
+              Status do pedido: <strong>{config.status[order.status]}</strong>
+            </Heading>
+            <hr />
+            <Heading subtitle size={4}>
+              Items do pedido
+            </Heading>
+            {orderItems.length > 0 ? (
+              getItems()
+            ) : (
+              <Block style={{ display: "flex", justifyContent: "center" }}>
+                <Spinner />
+              </Block>
+            )}
+            <hr />
+            <Heading subtitle size={4}>
+              Valor total do pedido:{" "}
+              <span style={{ color: "#48c774" }}>
+                R${order.total.toPrecision(order.total.toString().length + 2)}
+              </span>
+            </Heading>
+          </Box>
+        </Block>
+      );
+    }
+
+    return (
+      <Block
+        style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
+      >
+        <Spinner />
+      </Block>
+    );
   };
 
   return (
@@ -89,32 +138,7 @@ const MyOrder = (props) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <Box>
-        <Heading>Pedido do dia {formatDate(order.orderTime)}</Heading>
-      </Box>
-      <Box>
-        <Heading subtitle size={4}>
-          Status do pedido: <strong>{config.status[order.status]}</strong>
-        </Heading>
-        <hr />
-        <Heading subtitle size={4}>
-          Items do pedido
-        </Heading>
-        {order && order.orderItems ? (
-          getItems()
-        ) : (
-          <Block style={{ display: "flex", justifyContent: "center" }}>
-            <Spinner />
-          </Block>
-        )}
-        <hr />
-        <Heading subtitle size={4}>
-          Valor total do pedido:{" "}
-          <span style={{ color: "#48c774" }}>
-            R${order.total.toPrecision(order.total.toString().length + 2)}
-          </span>
-        </Heading>
-      </Box>
+      {renderOrder()}
     </Container>
   );
 };

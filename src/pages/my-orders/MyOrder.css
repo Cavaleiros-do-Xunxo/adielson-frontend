@@ -1,6 +1,7 @@
 .list-order-item {
   cursor: pointer;
   transition: all 0.5s;
+  margin-bottom: 10px;
 }
 
 .list-order-item:hover {

@@ -32,8 +32,9 @@ const MenuRegister = (props) => {
   const [menuItems, setMenuItems] = useState([]);
   const [itemCategories, setItemCategories] = useState([]);
   const [disabledButtons, setDisabledButtons] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchCategories = async () => {
+  const fetchCategories = async (isMounted = true) => {
     const categories = [];
 
     try {
@@ -45,24 +46,46 @@ const MenuRegister = (props) => {
         }
       }
 
-      setItemCategories(categories);
+      if (isMounted) {
+        setItemCategories(categories);
+      }
     } catch (e) {
       console.log("Failed to fetch categories");
     }
   };
 
-  const fetchMenuItems = async () => {
+  const fetchMenuItems = async (isMounted = true) => {
     try {
+      if (isMounted) {
+        setIsLoading(true);
+      }
+
       const response = await api.listMenuItems();
-      setMenuItems(response.data);
+
+      if (isMounted) {
+        setIsLoading(false);
+      }
+
+      if (isMounted) {
+        setMenuItems(response.data);
+      }
     } catch (e) {
+      if (isMounted) {
+        setIsLoading(false);
+      }
       console.error("Failed to list menu items");
     }
   };
 
   useEffect(() => {
-    fetchCategories();
-    fetchMenuItems();
+    let isMounted = true;
+
+    fetchCategories(isMounted);
+    fetchMenuItems(isMounted);
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const buildCategoriesSelect = () => {
@@ -325,7 +348,12 @@ const MenuRegister = (props) => {
         <hr />
         {showAddMenuItem()}
         <Block style={menuItems.length === 0 ? { textAlign: "center" } : {}}>
-          {menuItems.length > 0 ? showMenuItems() : <Spinner />}
+          {!isLoading ? showMenuItems() : <Spinner />}
+          {!isLoading && menuItems.length === 0 ? (
+            <Heading size={4}>Nenhum item foi cadastrado</Heading>
+          ) : (
+            ""
+          )}
         </Block>
       </Box>
     </Container>

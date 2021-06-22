@@ -62,6 +62,9 @@ const api = {
   getOrder: (id) => {
     return _http.get(`/orders/${id}`, { headers: _getAuthHeader() });
   },
+  getOrderItems: (id) => {
+    return _http.get(`/orders/${id}/items`, { headers: _getAuthHeader() });
+  },
 };
 
 export default api;

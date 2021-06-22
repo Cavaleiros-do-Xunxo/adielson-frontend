@@ -11,15 +11,20 @@ const Header = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const headerHeight = useRef(null);
-  const { isAuthenticated, setIsAuthenticated, setIsAdmin } =
+  const { isAuthenticated, setIsAuthenticated, isAdmin, setIsAdmin } =
     useContext(SessionContext);
 
   useEffect(() => {
     props.updateHeaderHeight(headerHeight.current.clientHeight);
     const currentToken = SessionManager.getAuthToken();
+    const currentUser = SessionManager.getCurrentUser();
 
     if (currentToken) {
       setIsAuthenticated(true);
+
+      if (currentUser.role === "ADMIN") {
+        setIsAdmin(true);
+      }
 
       api.getUserFromCurrentSession().catch((e) => {
         if (e.response && e.response.status === 401) {
@@ -46,6 +51,26 @@ const Header = (props) => {
       return (
         <Navbar.Item renderAs={Link} to="/myorders">
           Meus pedidos
+        </Navbar.Item>
+      );
+    }
+  };
+
+  const renderMenuRegister = () => {
+    if (isAuthenticated && isAdmin) {
+      return (
+        <Navbar.Item renderAs={Link} to="/menuregister">
+          Cadastrar cardápio
+        </Navbar.Item>
+      );
+    }
+  };
+
+  const renderDashboard = () => {
+    if (isAuthenticated && isAdmin) {
+      return (
+        <Navbar.Item renderAs={Link} to="/dashboard">
+          Dashboard
         </Navbar.Item>
       );
     }
@@ -106,6 +131,8 @@ const Header = (props) => {
             Cardápio
           </Navbar.Item>
           {renderMyOrders()}
+          {renderMenuRegister()}
+          {renderDashboard()}
         </Navbar.Container>
         <Navbar.Container align="end">
           <Navbar.Item href="#" renderAs="div">

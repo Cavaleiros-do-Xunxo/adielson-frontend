@@ -24,13 +24,12 @@ const config = {
 
 const Home = (props) => {
   const [dailyMenuItems, setDailyMenuItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
 
-    if (isMounted) {
-      fetchDailyMenuItems();
-    }
+    fetchDailyMenuItems(isMounted);
 
     return () => {
       isMounted = false;
@@ -55,18 +54,32 @@ const Home = (props) => {
     return menuItems;
   };
 
-  const fetchDailyMenuItems = async () => {
+  const fetchDailyMenuItems = async (isMounted = true) => {
     try {
+      if (isMounted) {
+        setIsLoading(true);
+      }
+
       const response = await api.listMenuItems();
+
+      if (isMounted) {
+        setIsLoading(false);
+      }
 
       if (response && response.data && Array.isArray(response.data)) {
         const menuItems = response.data.filter((item, _) => {
           return item.inMenu;
         });
 
-        setDailyMenuItems(menuItems);
+        if (isMounted) {
+          setDailyMenuItems(menuItems);
+        }
       }
     } catch (e) {
+      if (isMounted) {
+        setIsLoading(false);
+      }
+
       console.error("Failed to load daily menu items", e);
     }
   };
@@ -113,7 +126,12 @@ const Home = (props) => {
           flexWrap={"wrap"}
           style={{ marginLeft: "2px", justifyContent: "center" }}
         >
-          {dailyMenuItems.length > 0 ? buildSomeOffersSection() : <Spinner />}
+          {!isLoading ? buildSomeOffersSection() : <Spinner />}
+          {!isLoading && dailyMenuItems.length === 0 ? (
+            <Heading size={4}>Nenhum item cadastrado no cardápio</Heading>
+          ) : (
+            ""
+          )}
         </Columns>
       </Container>
       <Box className="view-menu">

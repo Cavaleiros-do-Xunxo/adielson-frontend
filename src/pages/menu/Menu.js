@@ -10,19 +10,34 @@ import "./Menu.css";
 
 const Menu = (props) => {
   const [dailyMenuItems, setDailyMenuItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchDailyMenuItems = async () => {
+  const fetchDailyMenuItems = async (isMounted = true) => {
     try {
+      if (isMounted) {
+        setIsLoading(true);
+      }
+
       const response = await api.listMenuItems();
+
+      if (isMounted) {
+        setIsLoading(false);
+      }
 
       if (response && response.data && Array.isArray(response.data)) {
         const menuItems = response.data.filter((item, _) => {
           return item.inMenu;
         });
 
-        setDailyMenuItems(menuItems);
+        if (isMounted) {
+          setDailyMenuItems(menuItems);
+        }
       }
     } catch (e) {
+      if (isMounted) {
+        setIsLoading(false);
+      }
+
       console.error("Failed to load daily menu items", e);
     }
   };
@@ -30,9 +45,7 @@ const Menu = (props) => {
   useEffect(() => {
     let isMounted = true;
 
-    if (isMounted) {
-      fetchDailyMenuItems();
-    }
+    fetchDailyMenuItems(isMounted);
 
     return () => {
       isMounted = false;
@@ -79,7 +92,12 @@ const Menu = (props) => {
         flexWrap={"wrap"}
         style={dailyMenuItems.length === 0 ? { justifyContent: "center" } : {}}
       >
-        {dailyMenuItems.length > 0 ? buildDailyMenu() : <Spinner />}
+        {!isLoading ? buildDailyMenu() : <Spinner />}
+        {!isLoading && dailyMenuItems.length === 0 ? (
+          <Heading size={4}>Nenhum item foi cadastrado no cardápio</Heading>
+        ) : (
+          ""
+        )}
       </Columns>
     </Container>
   );

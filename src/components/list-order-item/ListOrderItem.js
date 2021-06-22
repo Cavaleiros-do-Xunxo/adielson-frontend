@@ -11,25 +11,6 @@ const config = {
 };
 
 const ListOrderItem = (props) => {
-  const renderItemsList = () => {
-    const items = [];
-
-    for (const item of props.items) {
-      items.push(
-        <Block key={item.menuItem.id}>
-          <p>
-            <strong>
-              {item.count} {item.menuItem.name}:{" "}
-            </strong>{" "}
-            {item.menuItem.description}
-          </p>
-        </Block>
-      );
-    }
-
-    return items;
-  };
-
   return (
     <Box className={props.className}>
       <Media>
@@ -45,9 +26,9 @@ const ListOrderItem = (props) => {
               >
                 {config.status[props.status]}
               </Heading>
-              {renderItemsList()}
-              <p style={{ color: "#48c774" }}>
-                <strong>Total: </strong>R$ {props.total}
+              <p>
+                <strong>Total: </strong>
+                <span style={{ color: "#48c774" }}>R$ {props.total}</span>
               </p>
             </Block>
           </Content>

@@ -180,16 +180,15 @@ const Order = (props) => {
 
     await api.createOrder({
       delivery: deliveryMethod,
+      paymentMethod: paymentMethod,
       items: items,
-      orderAddress: [
-        {
-          address: location.address,
-          address2: location.complement,
-          zipCode: location.number,
-        },
-      ],
+      address: {
+        address: location.address + ", " + location.number,
+        complement: location.complement,
+      },
     });
     setShowSuccessOverlay(true);
+    CartManager.clear();
     setCartItems([]);
 
     setTimeout(() => {
