@@ -38,7 +38,7 @@ const config = {
   },
   deliveryMethods: {
     DELIVERY: "DELIVERY",
-    WITHDRAW_IN_PLACE: "WITHDRAW_IN_PLACE",
+    LOCAL: "LOCAL",
   },
   paymentMethods: {
     IN_APP: "IN_APP",
@@ -178,15 +178,24 @@ const Order = (props) => {
       };
     });
 
-    await api.createOrder({
+    const requestBody = {
       delivery: deliveryMethod,
       paymentMethod: paymentMethod,
       items: items,
       address: {
+        address: null,
+        complement: null 
+      },
+    };
+
+    if (deliveryMethod === config.deliveryMethods.DELIVERY) {
+      requestBody.address = {
         address: location.address + ", " + location.number,
         complement: location.complement,
-      },
-    });
+      };
+    }
+
+    await api.createOrder(requestBody);
     setShowSuccessOverlay(true);
     CartManager.clear();
     setCartItems([]);
@@ -320,10 +329,10 @@ const Order = (props) => {
               Entrega
             </Form.Radio>
             <Form.Radio
-              value={config.deliveryMethods.WITHDRAW_IN_PLACE}
+              value={config.deliveryMethods.LOCAL}
               name="deliveryMethod"
               checked={
-                deliveryMethod === config.deliveryMethods.WITHDRAW_IN_PLACE
+                deliveryMethod === config.deliveryMethods.LOCAL
               }
               onChange={(e) => {
                 setDeliveryMethod(e.target.value);

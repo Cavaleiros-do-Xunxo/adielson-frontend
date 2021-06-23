@@ -65,6 +65,9 @@ const api = {
   getOrderItems: (id) => {
     return _http.get(`/orders/${id}/items`, { headers: _getAuthHeader() });
   },
+  updateOrder: (id, data) => {
+    return _http.patch(`/orders/${id}`, data, { headers: _getAuthHeader() });
+  }
 };
 
 export default api;
