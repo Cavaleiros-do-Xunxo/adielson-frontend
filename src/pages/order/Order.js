@@ -97,6 +97,7 @@ const Order = (props) => {
   });
   const [formIssues, setFormIssues] = useState([]);
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+  const [isProcessingOrder, setIsProcessingOrder] = useState(false);
   const { cartItems, setCartItems } = useContext(SessionContext);
 
   const updateCurrentStep = (step) => {
@@ -195,7 +196,16 @@ const Order = (props) => {
       };
     }
 
-    await api.createOrder(requestBody);
+    setIsProcessingOrder(true);
+    
+    try {
+      await api.createOrder(requestBody);
+    } catch(e) {
+      console.error("Failed to make order");
+    }
+
+    setIsProcessingOrder(false);
+
     setShowSuccessOverlay(true);
     CartManager.clear();
     setCartItems([]);
@@ -391,6 +401,7 @@ const Order = (props) => {
           <Button
             color="success"
             style={{ marginLeft: "5px" }}
+            disabled={isProcessingOrder}
             onClick={() => {
               submitForm();
             }}
