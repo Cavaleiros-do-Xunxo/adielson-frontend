@@ -7,11 +7,39 @@ on:
 env:
   IMAGE_NAME: frontend
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - uses: actions/checkout@v2
+      # NodeJS
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm i --force
+      - run: npm run build
+      # Upload
+      - name: Save Artifacts
+        uses: actions/upload-artifact@v2
+        if: github.event_name == 'push'
+        with:
+          name: assets
+          path: build/*
   docker:
     runs-on: ubuntu-latest
+    needs: build
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
+      # Download
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: assets
+          path: build/
       # Build
       - name: Docker Build
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
@@ -21,17 +49,23 @@ jobs:
       # Push
       - name: Push image
         run: |
-          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+          IMAGE_ID=docker.pkg.github.com/cavaleiros-do-xunxo/adielson-frontend/$IMAGE_NAME
+
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
           # Use Docker `latest` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
+
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
+
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
   # deploy:
@@ -49,5 +83,5 @@ jobs:
   #           cd /opt/stack
   #           docker-compose stop frontend
   #           docker-compose rm -f frontend
-  #           docker rmi docker.pkg.github.com/cavaleiros-do-xunxo/adielson-front-end/frontend:latest
+  #           docker rmi docker.pkg.github.com/cavaleiros-do-xunxo/adielson-frontend/frontend:latest
   #           docker-compose up -d frontend

@@ -1,12 +1,3 @@
-FROM node:14.16.1-buster-slim
+FROM nginx:alpine
 
-EXPOSE 3000
-
-WORKDIR /app
-
-COPY . ./
-
-RUN npm install --force
-RUN npm run build
-
-ENTRYPOINT ["node", "server.js"]
+COPY build /usr/share/nginx/html
