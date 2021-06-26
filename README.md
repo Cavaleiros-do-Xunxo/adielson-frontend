@@ -5,5 +5,5 @@ Este é o repositório do projeto da faculdade "Restaurante e Pastelaria do Adie
 ## Tecnologias utilizadas:
 
 - **React**: Framework web feito em cima da linguagem de programação Javascript para criar toda a interface web do sistema;
-- **Docker**: Ferramenta de "virtualização" utilizada para criar uma imagem da nossa aplicação, facilitando 
-- **Bulma CSS**:
+- **Docker**: Ferramenta de "virtualização" utilizada para criar uma imagem da nossa aplicação e realizar o deploy;
+- **Bulma CSS**: Biblioteca de componentes CSS que facilita na estilização da aplicação.
