@@ -1,9 +1,9 @@
 name: Docker CI
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 env:
   IMAGE_NAME: adielson-frontend
 jobs:

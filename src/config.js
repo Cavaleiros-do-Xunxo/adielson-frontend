@@ -1,5 +1,5 @@
 let config = {
-  API_URL: process.env.API_URL || "https://adielson-api.notfab.net",
+  API_URL: "https://adielson-api.notfab.net",
 };
 
 if (process.env.NODE_ENV === "development") {
